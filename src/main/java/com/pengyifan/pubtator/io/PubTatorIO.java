@@ -6,6 +6,7 @@ import com.pengyifan.pubtator.PubTatorDocument;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
 
 public class PubTatorIO {
@@ -20,7 +21,12 @@ public class PubTatorIO {
     return new PubTatorLoader().load(reader);
   }
 
-  public static String write(List<PubTatorDocument> documentList) {
+  public static String toPubTatorString(List<PubTatorDocument> documentList) {
     return Joiner.on("\n\n").join(documentList);
+  }
+
+  public static void write(Writer writer, List<PubTatorDocument> documentList)
+      throws IOException {
+    writer.write(Joiner.on("\n\n").join(documentList));
   }
 }
