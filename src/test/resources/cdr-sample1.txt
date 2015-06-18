@@ -1,0 +1,27 @@
+26094|t|Antihypertensive drugs and depression: a reappraisal.
+26094|a|Eighty-nine new referral hypertensive out-patients and 46 new referral non-hypertensive chronically physically ill out-patients completed a mood rating scale at regular intervals for one year. The results showed a high prevalence of depression in both groups of patients, with no preponderance in the hypertensive group. Hypertensive patients with psychiatric histories had a higher prevalence of depression than the comparison patients. This was accounted for by a significant number of depressions occurring in methyl dopa treated patients with psychiatric histories.
+26094	27	37	depression	Disease	D003866
+26094	79	91	hypertensive	Disease	D006973
+26094	129	141	hypertensive	Disease	D006973
+26094	287	297	depression	Disease	D003866
+26094	355	367	hypertensive	Disease	D006973
+26094	375	387	Hypertensive	Disease	D006973
+26094	402	413	psychiatric	Disease	D001523
+26094	451	461	depression	Disease	D003866
+26094	542	553	depressions	Disease	D003866
+26094	567	578	methyl dopa	Chemical	D008750
+26094	601	612	psychiatric	Disease	D001523
+26094	CID	D008750	D003866
+
+3403780|t|Paracetamol-associated coma, metabolic acidosis, renal and hepatic failure.
+3403780|a|A case of metabolic acidosis, acute renal failure and hepatic failure following paracetamol ingestion is presented. The diagnostic difficulty at presentation is highlighted. Continuous arteriovenous haemofiltration proved a valuable means of maintaining fluid and electrolyte balance. The patient recovered.
+3403780	0	11	Paracetamol	Chemical	D000082
+3403780	23	27	coma	Disease	D003128
+3403780	29	47	metabolic acidosis	Disease	D000138
+3403780	49	74	renal and hepatic failure	Disease	D058186|D017093	renal failure|hepatic failure
+3403780	86	104	metabolic acidosis	Disease	D000138
+3403780	106	145	acute renal failure and hepatic failure	Disease	D058186|D017114	acute renal failure|acute hepatic failure
+3403780	156	167	paracetamol	Chemical	D000082
+3403780	CID	D000082	D000138
+3403780	CID	D000082	D017114
+3403780	CID	D000082	D058186

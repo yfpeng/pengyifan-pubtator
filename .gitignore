@@ -1,0 +1,31 @@
+bin
+.svn
+output/*
+doc/*
+.directory
+*~
+\#*
+.\#*
+/logs
+/config
+/resources
+
+# Python
+*.pyc
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/

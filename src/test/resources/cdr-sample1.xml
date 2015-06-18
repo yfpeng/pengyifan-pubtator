@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE collection
+  SYSTEM 'BioC.dtd'>
+<collection>
+	<source>PubTator</source>
+	<date>2015/06/05 </date>
+	<key>PubTator.key</key>
+	<document>
+		<id>26094</id>
+		<passage>
+			<infon key="type">title</infon>
+			<offset>0</offset>
+			<text>Antihypertensive drugs and depression: a reappraisal.</text>
+			<annotation id="0">
+				<infon key="type">Disease</infon>
+				<location length="10" offset="27"/>
+				<text>depression</text>
+				<infon key="MESH">D003866</infon>
+			</annotation>
+		</passage>
+		<passage>
+			<infon key="type">abstract</infon>
+			<offset>54</offset>
+			<text>Eighty-nine new referral hypertensive out-patients and 46 new referral non-hypertensive chronically physically ill out-patients completed a mood rating scale at regular intervals for one year. The results showed a high prevalence of depression in both groups of patients, with no preponderance in the hypertensive group. Hypertensive patients with psychiatric histories had a higher prevalence of depression than the comparison patients. This was accounted for by a significant number of depressions occurring in methyl dopa treated patients with psychiatric histories.</text>
+			<annotation id="1">
+				<infon key="type">Disease</infon>
+				<location length="12" offset="79"/>
+				<text>hypertensive</text>
+				<infon key="MESH">D006973</infon>
+			</annotation>
+			<annotation id="2">
+				<infon key="type">Disease</infon>
+				<location length="12" offset="129"/>
+				<text>hypertensive</text>
+				<infon key="MESH">D006973</infon>
+			</annotation>
+			<annotation id="3">
+				<infon key="type">Disease</infon>
+				<location length="10" offset="287"/>
+				<text>depression</text>
+				<infon key="MESH">D003866</infon>
+			</annotation>
+			<annotation id="4">
+				<infon key="type">Disease</infon>
+				<location length="12" offset="355"/>
+				<text>hypertensive</text>
+				<infon key="MESH">D006973</infon>
+			</annotation>
+			<annotation id="5">
+				<infon key="type">Disease</infon>
+				<location length="12" offset="375"/>
+				<text>Hypertensive</text>
+				<infon key="MESH">D006973</infon>
+			</annotation>
+			<annotation id="6">
+				<infon key="type">Disease</infon>
+				<location length="11" offset="402"/>
+				<text>psychiatric</text>
+				<infon key="MESH">D001523</infon>
+			</annotation>
+			<annotation id="7">
+				<infon key="type">Disease</infon>
+				<location length="10" offset="451"/>
+				<text>depression</text>
+				<infon key="MESH">D003866</infon>
+			</annotation>
+			<annotation id="8">
+				<infon key="type">Disease</infon>
+				<location length="11" offset="542"/>
+				<text>depressions</text>
+				<infon key="MESH">D003866</infon>
+			</annotation>
+			<annotation id="9">
+				<infon key="type">Chemical</infon>
+				<location length="11" offset="567"/>
+				<text>methyl dopa</text>
+				<infon key="MESH">D008750</infon>
+			</annotation>
+			<annotation id="10">
+				<infon key="type">Disease</infon>
+				<location length="11" offset="601"/>
+				<text>psychiatric</text>
+				<infon key="MESH">D001523</infon>
+			</annotation>
+		</passage>
+		<annotation id="R0">
+			<infon key="relation">CID</infon>
+			<infon key="Chemical">D008750</infon>
+			<infon key="Disease">D003866</infon>
+		</annotation>
+	</document>
+	<document>
+		<id>3403780</id>
+		<passage>
+			<infon key="type">title</infon>
+			<offset>0</offset>
+			<text>Paracetamol-associated coma, metabolic acidosis, renal and hepatic failure.</text>
+			<annotation id="0">
+				<infon key="type">Chemical</infon>
+				<location length="11" offset="0"/>
+				<text>Paracetamol</text>
+				<infon key="MESH">D000082</infon>
+			</annotation>
+			<annotation id="1">
+				<infon key="type">Disease</infon>
+				<location length="4" offset="23"/>
+				<text>coma</text>
+				<infon key="MESH">D003128</infon>
+			</annotation>
+			<annotation id="2">
+				<infon key="type">Disease</infon>
+				<location length="18" offset="29"/>
+				<text>metabolic acidosis</text>
+				<infon key="MESH">D000138</infon>
+			</annotation>
+			<annotation id="3">
+				<infon key="type">Disease</infon>
+				<infon key="CompositeRole">CompositeMention</infon>
+				<location length="25" offset="49"/>
+				<text>renal and hepatic failure</text>
+				<infon key="MESH">D058186|D017093</infon>
+			</annotation>
+			<annotation id="4">
+				<infon key="type">Disease</infon>
+				<infon key="CompositeRole">IndividualMention</infon>
+				<location length="5" offset="49"/>
+				<location length="7" offset="67"/>
+				<text>renal failure</text>
+				<infon key="MESH">D058186</infon>
+			</annotation>
+			<annotation id="5">
+				<infon key="type">Disease</infon>
+				<infon key="CompositeRole">IndividualMention</infon>
+				<location length="15" offset="59"/>
+				<text>hepatic failure</text>
+				<infon key="MESH">D017093</infon>
+			</annotation>
+		</passage>
+		<passage>
+			<infon key="type">abstract</infon>
+			<offset>76</offset>
+			<text>A case of metabolic acidosis, acute renal failure and hepatic failure following paracetamol ingestion is presented. The diagnostic difficulty at presentation is highlighted. Continuous arteriovenous haemofiltration proved a valuable means of maintaining fluid and electrolyte balance. The patient recovered.</text>
+			<annotation id="6">
+				<infon key="type">Disease</infon>
+				<location length="18" offset="86"/>
+				<text>metabolic acidosis</text>
+				<infon key="MESH">D000138</infon>
+			</annotation>
+			<annotation id="7">
+				<infon key="type">Disease</infon>
+				<infon key="CompositeRole">CompositeMention</infon>
+				<location length="39" offset="106"/>
+				<text>acute renal failure and hepatic failure</text>
+				<infon key="MESH">D058186|D017114</infon>
+			</annotation>
+			<annotation id="8">
+				<infon key="type">Disease</infon>
+				<infon key="CompositeRole">IndividualMention</infon>
+				<location length="19" offset="106"/>
+				<text>acute renal failure</text>
+				<infon key="MESH">D058186</infon>
+			</annotation>
+			<annotation id="9">
+				<infon key="type">Disease</infon>
+				<infon key="CompositeRole">IndividualMention</infon>
+				<location length="5" offset="106"/>
+				<location length="15" offset="130"/>
+				<text>acute hepatic failure</text>
+				<infon key="MESH">D017114</infon>
+			</annotation>
+			<annotation id="10">
+				<infon key="type">Chemical</infon>
+				<location length="11" offset="156"/>
+				<text>paracetamol</text>
+				<infon key="MESH">D000082</infon>
+			</annotation>
+		</passage>
+		<annotation id="R0">
+			<infon key="relation">CID</infon>
+			<infon key="Chemical">D000082</infon>
+			<infon key="Disease">D000138</infon>
+		</annotation>
+		<annotation id="R1">
+			<infon key="relation">CID</infon>
+			<infon key="Chemical">D000082</infon>
+			<infon key="Disease">D017114</infon>
+		</annotation>
+		<annotation id="R2">
+			<infon key="relation">CID</infon>
+			<infon key="Chemical">D000082</infon>
+			<infon key="Disease">D058186</infon>
+		</annotation>
+	</document>
+</collection>

@@ -1,0 +1,6 @@
+26094|t|Antihypertensive drugs and depression: a reappraisal.
+26094|a|Eighty-nine new referral hypertensive out-patients and 46 new referral non-hypertensive chronically physically ill out-patients completed a mood rating scale at regular intervals for one year. The results showed a high prevalence of depression in both groups of patients, with no preponderance in the hypertensive group. Hypertensive patients with psychiatric histories had a higher prevalence of depression than the comparison patients. This was accounted for by a significant number of depressions occurring in methyl dopa treated patients with psychiatric histories.
+26094	27	37	depression	Disease	D003866
+26094	79	91	hypertensive	Disease	D006973
+26094	129	141	hypertensive	Disease	D006973
+26094	287	297	depression	Disease	D003866
