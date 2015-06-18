@@ -28,5 +28,6 @@ public class PubTatorIO {
   public static void write(Writer writer, List<PubTatorDocument> documentList)
       throws IOException {
     writer.write(Joiner.on("\n\n").join(documentList));
+    writer.flush();
   }
 }
