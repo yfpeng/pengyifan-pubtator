@@ -65,8 +65,8 @@ public class PubTator2Brat {
           BratRelation bratRelation = new BratRelation();
           bratRelation.setId("R" + relationId++);
           bratRelation.setType(relation.getType());
-          bratRelation.putArgument("Arg1", e1.getId());
-          bratRelation.putArgument("Arg2", e2.getId());
+          bratRelation.putArgument(e1.getType(), e1.getId());
+          bratRelation.putArgument(e2.getType(), e2.getId());
           bratDocument.addAnnotation(bratRelation);
         }
       }
