@@ -56,21 +56,21 @@ public class PubTator2Brat {
       }
     }
     // relation
-    int relationId = 0;
-    for(PubTatorRelationAnnotation relation: pubTatorDocument.getRelations()) {
-      List<BratEntity> e1s = map.get(relation.getConceptId1());
-      List<BratEntity> e2s = map.get(relation.getConceptId2());
-      for(BratEntity e1: e1s) {
-        for (BratEntity e2: e2s) {
-          BratRelation bratRelation = new BratRelation();
-          bratRelation.setId("R" + relationId++);
-          bratRelation.setType(relation.getType());
-          bratRelation.putArgument(e1.getType(), e1.getId());
-          bratRelation.putArgument(e2.getType(), e2.getId());
-          bratDocument.addAnnotation(bratRelation);
-        }
-      }
-    }
+//    int relationId = 0;
+//    for(PubTatorRelationAnnotation relation: pubTatorDocument.getRelations()) {
+//      List<BratEntity> e1s = map.get(relation.getConceptId1());
+//      List<BratEntity> e2s = map.get(relation.getConceptId2());
+//      for(BratEntity e1: e1s) {
+//        for (BratEntity e2: e2s) {
+//          BratRelation bratRelation = new BratRelation();
+//          bratRelation.setId("R" + relationId++);
+//          bratRelation.setType(relation.getType());
+//          bratRelation.putArgument(e1.getType(), e1.getId());
+//          bratRelation.putArgument(e2.getType(), e2.getId());
+//          bratDocument.addAnnotation(bratRelation);
+//        }
+//      }
+//    }
     return bratDocument;
   }
 }
