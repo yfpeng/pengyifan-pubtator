@@ -79,9 +79,10 @@ class PubTatorLoader {
     String text = fields[3];
     String type = fields[4];
     Set<String> conceptIds = Sets.newHashSet(Splitter.on("|").split(fields[5]));
+    String comment = fields.length == 7 ? fields[6] : null;
 
     pDoc.addAnnotation(new PubTatorMentionAnnotation(
-        pDoc.getId(), type, start, end, text, conceptIds));
+        pDoc.getId(), type, start, end, text, conceptIds, comment));
   }
 
   private void parseRelation(String[] fields, PubTatorDocument pDoc) {

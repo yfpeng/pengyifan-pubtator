@@ -14,6 +14,7 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
   private int start;
   private int end;
   private Set<String> conceptIds;
+  private String comment;
 
   public PubTatorMentionAnnotation(String id, String type, int start, int end, String text,
       Set<String> conceptIds) {
@@ -22,6 +23,16 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
     this.end = end;
     this.text = text;
     this.conceptIds = conceptIds;
+  }
+
+  public PubTatorMentionAnnotation(String id, String type, int start, int end, String text,
+      Set<String> conceptIds, String comment) {
+    super(id, type);
+    this.start = start;
+    this.end = end;
+    this.text = text;
+    this.conceptIds = conceptIds;
+    this.comment = comment;
   }
 
   public String getText() {
@@ -52,9 +63,9 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
     return conceptIds;
   }
 
-//  public void setConceptId(Set<String> conceptIds) {
-//    this.conceptIds = conceptIds;
-//  }
+  public void setConceptId(Set<String> conceptIds) {
+    this.conceptIds = conceptIds;
+  }
 
   public void addConceptId(String conceptId) {
     this.conceptIds.add(conceptId);
@@ -62,8 +73,8 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
 
   @Override
   public String toPubTatorString() {
-    return Joiner.on("\t").join(getId(), start, end, text, getType(),
-        Joiner.on('|').join(getConceptIds()));
+    return Joiner.on("\t").skipNulls().join(getId(), start, end, text, getType(),
+        Joiner.on('|').join(getConceptIds().stream().sorted().toArray()), comment);
   }
 
   @Override

@@ -62,12 +62,8 @@ public class BioC2PubTator {
   }
 
   private String finalizeConceptId(String conceptId) {
-    if (conceptId == null || conceptId.length() == 0 || conceptId.equals("-1")) {
-      return null;
-    }
-    if (conceptId.contains(":")) {
-      return conceptId;
-    }
+    checkArgument(conceptId != null && conceptId.length() != 0, "Cannot convert conceptId: %s",
+        conceptId);
     return conceptId;
   }
 
