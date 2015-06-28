@@ -42,11 +42,11 @@ public class PubTatorDocument {
 
     getMentions().stream()
         .sorted((m1, m2) -> Integer.compare(m1.getStart(), m2.getStart()))
-        .forEach(m -> sj.add(m.toPubTatorString()));
+        .forEach(m -> sj.add(m.toPubTatorString(getId())));
 
     getRelations().stream()
         .sorted((r1, r2) -> r1.getId().compareTo(r2.getId()))
-        .forEach(r -> sj.add(r.toPubTatorString()));
+        .forEach(r -> sj.add(r.toPubTatorString(getId())));
 
     return sj.toString();
   }

@@ -38,9 +38,9 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
   }
 
   @Override
-  public String toPubTatorString() {
+  public String toPubTatorString(String docId) {
     return Joiner.on("\t").skipNulls().join(
-        getId(),
+        docId,
         getStart(),
         getEnd(),
         getText(),

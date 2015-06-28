@@ -14,6 +14,6 @@ public abstract class PubTatorAnnotation {
     return bioCAnnotation.getID();
   }
 
-  public abstract String toPubTatorString();
+  public abstract String toPubTatorString(String docId);
 
 }

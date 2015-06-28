@@ -38,6 +38,7 @@ class PubTatorLoader {
     for (String block : Splitter.onPattern("(\\r?\\n){2,}").split(sb.toString().trim())) {
       block = block.trim();
       BioCDocument bioCDocument = new BioCDocument();
+      boolean first = true;
       PubTatorDocument pubTatorDocument = new PubTatorDocument(bioCDocument);
       pubTatorDocuments.add(pubTatorDocument);
 
@@ -45,7 +46,8 @@ class PubTatorLoader {
         if (line.contains("|t|") || line.contains("|T|")
             || line.contains("|a|") || line.contains("|A|")) {
           String[] fields = parseText(line);
-          if (bioCDocument.getID() == null) {
+          if (first) {
+            first = false;
             bioCDocument.setID(fields[0]);
           } else {
             checkArgument(bioCDocument.getID().equals(fields[0]),
@@ -100,7 +102,11 @@ class PubTatorLoader {
     bioCAnnotation.setID(bioCDocument.getID());
     bioCAnnotation.setText(fields[3]);
     bioCAnnotation.putInfon("type", fields[4]);
-    bioCAnnotation.putInfon(fields[5].split(":")[0], fields[5].split(":")[1]);
+    if (fields[5].contains(":")) {
+      bioCAnnotation.putInfon(fields[5].split(":")[0], fields[5].split(":")[1]);
+    } else {
+      bioCAnnotation.putInfon("MESH", fields[5]);
+    }
     bioCAnnotation.addLocation(new BioCLocation(start, end - start));
     if (fields.length == 7) {
       bioCAnnotation.putInfon("comment", fields[6]);

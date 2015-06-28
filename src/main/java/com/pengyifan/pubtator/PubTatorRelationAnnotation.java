@@ -26,8 +26,8 @@ public class PubTatorRelationAnnotation extends PubTatorAnnotation {
   }
 
   @Override
-  public String toPubTatorString() {
-    return Joiner.on("\t").join(getId(), getType(), getConceptId1(), getConceptId2());
+  public String toPubTatorString(String docId) {
+    return Joiner.on("\t").join(docId, getType(), getConceptId1(), getConceptId2());
   }
 
   @Override
