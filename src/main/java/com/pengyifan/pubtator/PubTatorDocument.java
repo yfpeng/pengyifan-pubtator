@@ -2,34 +2,31 @@ package com.pengyifan.pubtator;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.pengyifan.bioc.BioCAnnotation;
+import com.pengyifan.bioc.BioCDocument;
+import com.pengyifan.bioc.BioCPassage;
 import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.util.ArrayCoreMap;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.ErasureUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class PubTatorDocument {
 
-  private CoreMap map;
+  private BioCDocument bioCDocument;
 
-  public PubTatorDocument() {
-    map = new ArrayCoreMap();
-    map.set(MentionsAnnotation.class, Lists.newArrayList());
-    map.set(RelationsAnnotation.class, Lists.newArrayList());
+  public PubTatorDocument(BioCDocument bioCDocument) {
+    this.bioCDocument = bioCDocument;
   }
 
-  public void addAnnotation(PubTatorAnnotation annotation) {
-    if (annotation instanceof PubTatorMentionAnnotation) {
-      getMentions().add((PubTatorMentionAnnotation) annotation);
-    } else if (annotation instanceof PubTatorRelationAnnotation) {
-      getRelations().add((PubTatorRelationAnnotation) annotation);
-    } else {
-      throw new IllegalArgumentException(String.format("Cannot handle annotation type: ",
-          annotation.getClass()));
-    }
+  public BioCDocument getBioCDocument() {
+    return bioCDocument;
   }
 
   public List<PubTatorMentionAnnotation> getMentions(String conceptId) {
@@ -44,11 +41,11 @@ public class PubTatorDocument {
     sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
 
     getMentions().stream()
-        .sorted((m1,m2) -> Integer.compare(m1.getStart(), m2.getStart()))
+        .sorted((m1, m2) -> Integer.compare(m1.getStart(), m2.getStart()))
         .forEach(m -> sj.add(m.toPubTatorString()));
 
     getRelations().stream()
-        .sorted((r1,r2) -> r1.getId().compareTo(r2.getId()))
+        .sorted((r1, r2) -> r1.getId().compareTo(r2.getId()))
         .forEach(r -> sj.add(r.toPubTatorString()));
 
     return sj.toString();
@@ -59,75 +56,37 @@ public class PubTatorDocument {
     return toPubTatorString();
   }
 
-  public void setId(String id) {
-    map.set(IdAnnotation.class, id);
-  }
-
   public String getId() {
-    return map.get(IdAnnotation.class);
-  }
-
-  public void setTitle(String title) {
-    map.set(TitleAnnotation.class, title);
-  }
-
-  public void setAbstract(String a) {
-    map.set(AbstractAnnotation.class, a);
+    return bioCDocument.getID();
   }
 
   public String getTitle() {
-    return map.get(TitleAnnotation.class);
+    return find("title").get().getText().get();
+  }
+
+  public Optional<BioCPassage> find(String type) {
+    return bioCDocument.getPassages().stream()
+        .filter(p -> p.getInfon("type").get().equals(type))
+        .findAny();
   }
 
   public String getAbstract() {
-    return map.get(AbstractAnnotation.class);
+    return find("abstract").get().getText().get();
   }
 
   public List<PubTatorMentionAnnotation> getMentions() {
-    return map.get(MentionsAnnotation.class);
+    List<PubTatorMentionAnnotation> annotatons = Lists.newArrayList();
+    for (BioCPassage passage : bioCDocument.getPassages()) {
+      for (BioCAnnotation a : passage.getAnnotations()) {
+        annotatons.add(new PubTatorMentionAnnotation(a));
+      }
+    }
+    return annotatons;
   }
 
   public List<PubTatorRelationAnnotation> getRelations() {
-    return map.get(RelationsAnnotation.class);
-  }
-
-  private class AbstractAnnotation implements CoreAnnotation<String> {
-
-    @Override
-    public Class<String> getType() {
-      return String.class;
-    }
-  }
-
-  private class TitleAnnotation implements CoreAnnotation<String> {
-
-    @Override
-    public Class<String> getType() {
-      return String.class;
-    }
-  }
-
-  private class MentionsAnnotation implements CoreAnnotation<List<PubTatorMentionAnnotation>> {
-
-    @Override
-    public Class<List<PubTatorMentionAnnotation>> getType() {
-      return ErasureUtils.<Class<List<PubTatorMentionAnnotation>>>uncheckedCast(List.class);
-    }
-  }
-
-  private class RelationsAnnotation implements CoreAnnotation<List<PubTatorRelationAnnotation>> {
-
-    @Override
-    public Class<List<PubTatorRelationAnnotation>> getType() {
-      return ErasureUtils.<Class<List<PubTatorRelationAnnotation>>>uncheckedCast(List.class);
-    }
-  }
-
-  private class IdAnnotation implements CoreAnnotation<String> {
-
-    @Override
-    public Class<String> getType() {
-      return String.class;
-    }
+    return bioCDocument.getAnnotations().stream()
+        .map(a -> new PubTatorRelationAnnotation(a))
+        .collect(Collectors.toList());
   }
 }

@@ -5,7 +5,6 @@ import com.pengyifan.bioc.BioCCollection;
 import com.pengyifan.bioc.io.BioCCollectionWriter;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.io.PubTatorIO;
-import com.pengyifan.pubtator.utils.PubTator2BioC;
 import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -123,11 +122,10 @@ public class Converter {
       PubTatorIO.write(writer, documents);
       break;
     case "bioc":
-      PubTator2BioC p2b = new PubTator2BioC();
       BioCCollection collection = new BioCCollection();
       collection.setKey("PubTator.key");
       collection.setSource("PubTator");
-      documents.stream().forEach(d -> collection.addDocument(p2b.convert(d)));
+      documents.stream().forEach(d -> collection.addDocument(d.getBioCDocument()));
       BioCCollectionWriter w = new BioCCollectionWriter(writer);
       w.writeCollection(collection);
       w.close();

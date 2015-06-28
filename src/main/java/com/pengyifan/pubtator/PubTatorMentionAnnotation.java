@@ -1,8 +1,10 @@
 package com.pengyifan.pubtator;
 
 import com.google.common.base.Joiner;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Sets;
+import com.pengyifan.bioc.BioCAnnotation;
+import com.pengyifan.bioc.BioCLocation;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -10,71 +12,41 @@ import java.util.Set;
 
 public class PubTatorMentionAnnotation extends PubTatorAnnotation {
 
-  private String text;
-  private int start;
-  private int end;
-  private Set<String> conceptIds;
-  private String comment;
-
-  public PubTatorMentionAnnotation(String id, String type, int start, int end, String text,
-      Set<String> conceptIds) {
-    super(id, type);
-    this.start = start;
-    this.end = end;
-    this.text = text;
-    this.conceptIds = conceptIds;
-  }
-
-  public PubTatorMentionAnnotation(String id, String type, int start, int end, String text,
-      Set<String> conceptIds, String comment) {
-    super(id, type);
-    this.start = start;
-    this.end = end;
-    this.text = text;
-    this.conceptIds = conceptIds;
-    this.comment = comment;
+  PubTatorMentionAnnotation(BioCAnnotation bioCAnnotation) {
+    super(bioCAnnotation);
   }
 
   public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
+    return bioCAnnotation.getText().get();
   }
 
   public int getEnd() {
-    return end;
-  }
-
-  public void setEnd(int end) {
-    this.end = end;
+    BioCLocation bioCLocation = bioCAnnotation.getTotalLocation();
+    return bioCLocation.getOffset() + bioCLocation.getLength();
   }
 
   public int getStart() {
-    return start;
+    return bioCAnnotation.getTotalLocation().getOffset();
   }
 
-  public void setStart(int start) {
-    this.start = start;
+  public String getType() {
+    return bioCAnnotation.getInfon("type").get();
   }
 
   public Set<String> getConceptIds() {
-    return conceptIds;
-  }
-
-  public void setConceptId(Set<String> conceptIds) {
-    this.conceptIds = conceptIds;
-  }
-
-  public void addConceptId(String conceptId) {
-    this.conceptIds.add(conceptId);
+    return Sets.newHashSet(Splitter.on('|').split(bioCAnnotation.getInfon("MESH").get()));
   }
 
   @Override
   public String toPubTatorString() {
-    return Joiner.on("\t").skipNulls().join(getId(), start, end, text, getType(),
-        Joiner.on('|').join(getConceptIds().stream().sorted().toArray()), comment);
+    return Joiner.on("\t").skipNulls().join(
+        getId(),
+        getStart(),
+        getEnd(),
+        getText(),
+        getType(),
+        bioCAnnotation.getInfon("MESH").get(),
+        bioCAnnotation.getInfon("comment").orElse(null));
   }
 
   @Override
@@ -85,40 +57,7 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
         .append("start", getStart())
         .append("end", getEnd())
         .append("text", getText())
-        .append("conceptId", Joiner.on('|').join(getConceptIds()))
+        .append("conceptId", bioCAnnotation.getInfon("MESH").get())
         .toString();
-  }
-
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (obj == this) {
-      return true;
-    }
-    if (obj.getClass() != getClass()) {
-      return false;
-    }
-    PubTatorMentionAnnotation rhs = (PubTatorMentionAnnotation) obj;
-    return new EqualsBuilder()
-        .appendSuper(super.equals(obj))
-        .append(this.text, rhs.text)
-        .append(this.start, rhs.start)
-        .append(this.end, rhs.end)
-        .append(this.conceptIds, rhs.conceptIds)
-        .isEquals();
-  }
-
-  @Override
-  public int hashCode() {
-    return new HashCodeBuilder()
-        .appendSuper(super.hashCode())
-        .append(text)
-        .append(start)
-        .append(end)
-        .append(conceptIds)
-        .toHashCode();
   }
 }

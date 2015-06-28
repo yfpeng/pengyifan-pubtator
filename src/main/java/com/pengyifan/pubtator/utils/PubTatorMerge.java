@@ -1,8 +1,14 @@
 package com.pengyifan.pubtator.utils;
 
+import com.pengyifan.bioc.BioCAnnotation;
+import com.pengyifan.bioc.BioCPassage;
+import com.pengyifan.brat.BratAnnotation;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
+
+import java.util.Collection;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -14,47 +20,51 @@ public class PubTatorMerge {
 
   public void addDocument(PubTatorDocument doc) {
     if (newDoc == null) {
-      newDoc = new PubTatorDocument();
-      newDoc.setId(doc.getId());
-      newDoc.setTitle(doc.getTitle());
-      newDoc.setAbstract(doc.getAbstract());
+      newDoc = new PubTatorDocument(doc.getBioCDocument());
     } else {
       checkArgument(newDoc.getId().equals(doc.getId()), "Not same document [new:%s] [old:%s]",
           newDoc.getId(), doc.getId());
     }
 
-    doc.getMentions().stream().forEach(ann -> {
-      if (!hasMention(ann)) {
-        newDoc.addAnnotation(ann);
+    BioCPassage newTitle = newDoc.getBioCDocument().getPassage(0);
+    BioCPassage title = doc.getBioCDocument().getPassage(0);
+    for(BioCAnnotation ann: title.getAnnotations()) {
+      if (!hasAnnotation(ann, newTitle.getAnnotations())) {
+        newTitle.addAnnotation(ann);
       }
-    });
-    doc.getRelations().stream().forEach(ann -> {
-      if (!hasRelation(ann)) {
-        newDoc.addAnnotation(ann);
+    }
+
+    BioCPassage newAbstract = newDoc.getBioCDocument().getPassage(1);
+    BioCPassage ab = doc.getBioCDocument().getPassage(1);
+    for(BioCAnnotation ann: ab.getAnnotations()) {
+      if (!hasAnnotation(ann, newAbstract.getAnnotations())) {
+        newAbstract.addAnnotation(ann);
       }
-    });
+    }
+
+    for(BioCAnnotation ann: doc.getBioCDocument().getAnnotations()) {
+      if (!hasAnnotation(ann, newDoc.getBioCDocument().getAnnotations())) {
+        newDoc.getBioCDocument().addAnnotation(ann);
+      }
+    }
+  }
+
+  private boolean hasAnnotation(BioCAnnotation ann, Collection<BioCAnnotation> annotations) {
+    for(BioCAnnotation a: annotations) {
+      if (isEqual(a, ann)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public PubTatorDocument getDoc() {
-    newDoc.getMentions().sort((m1, m2) -> Integer.compare(m1.getStart(), m2.getStart()));
     return newDoc;
   }
 
-  private boolean hasRelation(PubTatorRelationAnnotation relation) {
-    for (PubTatorRelationAnnotation r : newDoc.getRelations()) {
-      if (r.equals(relation)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean hasMention(PubTatorMentionAnnotation mention) {
-    for (PubTatorMentionAnnotation m : newDoc.getMentions()) {
-      if (m.equals(mention)) {
-        return true;
-      }
-    }
-    return false;
+  private boolean isEqual(BioCAnnotation ann1, BioCAnnotation ann2) {
+    return Objects.equals(ann1.getText(), ann2.getText())
+        && Objects.equals(ann1.getInfons(), ann2.getInfons())
+        && Objects.equals(ann1.getLocations(), ann2.getLocations());
   }
 }
