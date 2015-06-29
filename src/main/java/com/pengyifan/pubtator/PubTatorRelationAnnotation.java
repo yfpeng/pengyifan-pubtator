@@ -21,16 +21,8 @@ public class PubTatorRelationAnnotation extends PubTatorAnnotation {
     return conceptId1;
   }
 
-  public void setConceptId1(String conceptId1) {
-    this.conceptId1 = conceptId1;
-  }
-
   public String getConceptId2() {
     return conceptId2;
-  }
-
-  public void setConceptId2(String conceptId2) {
-    this.conceptId2 = conceptId2;
   }
 
   @Override
@@ -47,7 +39,6 @@ public class PubTatorRelationAnnotation extends PubTatorAnnotation {
         .append("conceptId2", getConceptId2())
         .toString();
   }
-
 
   @Override
   public boolean equals(Object obj) {

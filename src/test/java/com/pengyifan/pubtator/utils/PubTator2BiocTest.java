@@ -21,11 +21,11 @@ public class PubTator2BiocTest {
   private static final PubTator2BioC converter = new PubTator2BioC();
 
   @Test
-  public void testConvert() throws Exception {
+  public void testApply() throws Exception {
     Path path = getReader("cdr-sample1.txt");
     List<PubTatorDocument> pDocs = PubTatorIO.readPubTatorFormat(new FileReader(path.toFile()));
     List<BioCDocument> bDocs = pDocs.stream()
-        .map(converter::convert)
+        .map(converter::apply)
         .collect(Collectors.toList());
     assertEquals(2, bDocs.size());
 

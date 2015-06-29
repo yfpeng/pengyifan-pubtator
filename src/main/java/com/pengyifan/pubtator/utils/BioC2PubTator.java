@@ -12,12 +12,14 @@ import com.pengyifan.pubtator.PubTatorRelationAnnotation;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class BioC2PubTator {
+public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
 
-  public PubTatorDocument convert(BioCDocument bioCDocument) {
+  @Override
+  public PubTatorDocument apply(BioCDocument bioCDocument) {
     String documentId = bioCDocument.getID();
     PubTatorDocument pDoc = new PubTatorDocument();
     pDoc.setId(documentId);
@@ -62,7 +64,7 @@ public class BioC2PubTator {
   }
 
   private String finalizeConceptId(String conceptId) {
-    checkArgument(conceptId != null && conceptId.length() != 0, "Cannot convert conceptId: %s",
+    checkArgument(conceptId != null && conceptId.length() != 0, "Cannot apply conceptId: %s",
         conceptId);
     return conceptId;
   }

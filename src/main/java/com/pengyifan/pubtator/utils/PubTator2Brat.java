@@ -13,12 +13,14 @@ import com.pengyifan.pubtator.PubTatorRelationAnnotation;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class PubTator2Brat {
+public class PubTator2Brat implements Function<PubTatorDocument, BratDocument> {
 
-  public BratDocument convert(PubTatorDocument pubTatorDocument) {
+  @Override
+  public BratDocument apply(PubTatorDocument pubTatorDocument) {
     BratDocument bratDocument = new BratDocument();
     bratDocument.setDocId(pubTatorDocument.getId());
     bratDocument.setText(Joiner.on("\n").join(

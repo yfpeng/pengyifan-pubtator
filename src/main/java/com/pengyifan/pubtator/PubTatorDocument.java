@@ -27,7 +27,7 @@ public class PubTatorDocument {
     } else if (annotation instanceof PubTatorRelationAnnotation) {
       getRelations().add((PubTatorRelationAnnotation) annotation);
     } else {
-      throw new IllegalArgumentException(String.format("Cannot handle annotation type: ",
+      throw new IllegalArgumentException(String.format("Cannot handle annotation type: %s",
           annotation.getClass()));
     }
   }
@@ -44,11 +44,11 @@ public class PubTatorDocument {
     sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
 
     getMentions().stream()
-        .sorted((m1,m2) -> Integer.compare(m1.getStart(), m2.getStart()))
+        .sorted((m1, m2) -> Integer.compare(m1.getStart(), m2.getStart()))
         .forEach(m -> sj.add(m.toPubTatorString()));
 
     getRelations().stream()
-        .sorted((r1,r2) -> r1.getId().compareTo(r2.getId()))
+        .sorted((r1, r2) -> r1.getId().compareTo(r2.getId()))
         .forEach(r -> sj.add(r.toPubTatorString()));
 
     return sj.toString();

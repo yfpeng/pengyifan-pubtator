@@ -127,7 +127,7 @@ public class Converter {
       BioCCollection collection = new BioCCollection();
       collection.setKey("PubTator.key");
       collection.setSource("PubTator");
-      documents.stream().forEach(d -> collection.addDocument(p2b.convert(d)));
+      documents.stream().forEach(d -> collection.addDocument(p2b.apply(d)));
       BioCCollectionWriter w = new BioCCollectionWriter(writer);
       w.writeCollection(collection);
       w.close();

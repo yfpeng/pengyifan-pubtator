@@ -23,7 +23,7 @@ class BioCLoader {
     biocReader.close();
 
     return bioCCollection.getDocuments().stream()
-        .map(d -> converter.convert(d))
+        .map(d -> converter.apply(d))
         .collect(Collectors.toList());
   }
 }
