@@ -61,21 +61,45 @@ public class PubTatorEval {
     this.predDocuments = pred;
   }
 
+  public String getNERResult() {
+    ResultPrinter resultPrinter = new ResultPrinter();
+    resultPrinter.printTitle();
+    resultPrinter.printRow("Disease");
+    resultPrinter.printRow("  Concept id matching", diseaseIdStats);
+    resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
+    resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
+    resultPrinter.printRow("Chemical");
+    resultPrinter.printRow("  Concept id matching", chemicalIdStats);
+    resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
+    resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
+    return resultPrinter.toString();
+  }
+
+  public String getCIDResult () {
+    ResultPrinter resultPrinter = new ResultPrinter();
+    resultPrinter.printTitle();
+    resultPrinter.printRow("CID");
+    resultPrinter.printRow("  Concept id matching", cdrStats);
+    resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
+    resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
+    return resultPrinter.toString();
+  }
+
   public String getResult() {
     ResultPrinter resultPrinter = new ResultPrinter();
     resultPrinter.printTitle();
     resultPrinter.printRow("Disease");
+    resultPrinter.printRow("  Concept id matching", diseaseIdStats);
     resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
     resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
-    resultPrinter.printRow("  ID", diseaseIdStats);
     resultPrinter.printRow("Chemical");
+    resultPrinter.printRow("  Concept id matching", chemicalIdStats);
     resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
     resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
-    resultPrinter.printRow("  ID", chemicalIdStats);
-    resultPrinter.printRow("CDR", cdrStats);
-    resultPrinter.printRow("  CID", cdrStats);
-    resultPrinter.printRow("  CID (mention strict matching)", cdrWithMentionStats);
-    resultPrinter.printRow("  CID (mention appro matching)", cdrWithApproMentionStats);
+    resultPrinter.printRow("CID");
+    resultPrinter.printRow("  Concept id matching", cdrStats);
+    resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
+    resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
     return resultPrinter.toString();
   }
 
