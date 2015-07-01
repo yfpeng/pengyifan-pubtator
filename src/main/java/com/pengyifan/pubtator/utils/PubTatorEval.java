@@ -104,9 +104,9 @@ public class PubTatorEval {
     for (E gold : golds) {
       Optional<E> o = find(gold, preds, biPredicate);
       if (o.isPresent()) {
-        stats1.incrementTP(find(o.get(), golds, biPredicate).get());
+        stats1.incrementTP(gold);
       } else {
-        stats1.incrementFN(find(gold, golds, biPredicate).get());
+        stats1.incrementFN(gold);
       }
     }
     PrecisionRecallStats stats2 = new PrecisionRecallStats();
@@ -115,7 +115,7 @@ public class PubTatorEval {
       if (o.isPresent()) {
         stats2.incrementTP(o.get());
       } else {
-        stats2.incrementFP(find(pred, golds, biPredicate).get());
+        stats2.incrementFP(pred);
       }
     }
     checkArgument(stats1.getTP() == stats1.getTP(), "Error");

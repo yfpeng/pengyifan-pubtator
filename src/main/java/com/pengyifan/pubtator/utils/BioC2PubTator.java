@@ -66,6 +66,10 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
   private String finalizeConceptId(String conceptId) {
     checkArgument(conceptId != null && conceptId.length() != 0, "Cannot apply conceptId: %s",
         conceptId);
+    int col = conceptId.indexOf(':');
+    if (col != -1) {
+      conceptId = conceptId.substring(col + 1);
+    }
     return conceptId;
   }
 

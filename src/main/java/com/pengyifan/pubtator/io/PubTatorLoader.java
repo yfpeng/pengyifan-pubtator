@@ -78,7 +78,10 @@ class PubTatorLoader {
 
     String text = fields[3];
     String type = fields[4];
-    Set<String> conceptIds = Sets.newHashSet(Splitter.on("|").split(fields[5]));
+    Set<String> conceptIds = Sets.newHashSet();
+    for(String conceptId: Splitter.on("|").split(fields[5])) {
+      conceptIds.add(finalizeConceptId(conceptId));
+    }
     String comment = fields.length == 7 ? fields[6] : null;
 
     pDoc.addAnnotation(new PubTatorMentionAnnotation(
@@ -101,8 +104,9 @@ class PubTatorLoader {
     if (conceptId == null || conceptId.length() == 0 || conceptId.equals("-1")) {
       return null;
     }
-    if (conceptId.contains(":")) {
-      return conceptId;
+    int col = conceptId.indexOf(':');
+    if (col != -1) {
+      conceptId = conceptId.substring(col + 1);
     }
     return conceptId;
   }
