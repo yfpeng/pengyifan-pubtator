@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 
 public class ResultPrinter {
 
-  private static final String FORMAT = "%-18s %7s (%5s) %7s (%5s) %7s %7s %7s";
+  private static final String FORMAT = "%-31s %7s (%5s) %7s (%5s) %7s %7s %7s";
   private static final String HEADER = String.format(
       FORMAT, "Class", "gold", "match", "answer", "match", "recall",
       "prec.", "fscore");
