@@ -1,5 +1,6 @@
 package com.pengyifan.pubtator.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
@@ -13,25 +14,112 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-import static com.google.common.base.Preconditions.checkArgument;
+public abstract class PubTatorEval {
 
-public class PubTatorEval {
+  public static class DetailedEval extends PubTatorEval {
+
+    public DetailedEval(List<PubTatorDocument> gold, List<PubTatorDocument> pred) {
+      super(gold, pred);
+    }
+
+    public String getNERResult() {
+      ResultPrinter resultPrinter = new ResultPrinter();
+      resultPrinter.printTitle();
+      resultPrinter.printRow("Disease");
+      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
+      resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
+      resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
+      resultPrinter.printRow("Chemical");
+      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
+      resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
+      resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
+      return resultPrinter.toString();
+    }
+
+    public String getCIDResult() {
+      ResultPrinter resultPrinter = new ResultPrinter();
+      resultPrinter.printTitle();
+      resultPrinter.printRow("CID");
+      resultPrinter.printRow("  Concept id matching", cdrStats);
+      resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
+      resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
+      return resultPrinter.toString();
+    }
+
+    public String getResult() {
+      ResultPrinter resultPrinter = new ResultPrinter();
+      resultPrinter.printTitle();
+      resultPrinter.printRow("Disease");
+      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
+      resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
+      resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
+      resultPrinter.printRow("Chemical");
+      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
+      resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
+      resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
+      resultPrinter.printRow("CID");
+      resultPrinter.printRow("  Concept id matching", cdrStats);
+      resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
+      resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
+      return resultPrinter.toString();
+    }
+  }
+
+  public static class SimpleEval extends PubTatorEval {
+
+    public SimpleEval(List<PubTatorDocument> gold, List<PubTatorDocument> pred) {
+      super(gold, pred);
+    }
+
+    public String getNERResult() {
+      ResultPrinter resultPrinter = new ResultPrinter();
+      resultPrinter.printTitle();
+      resultPrinter.printRow("Disease");
+      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
+      resultPrinter.printRow("  Mention matching", diseaseMentionStats);
+      resultPrinter.printRow("Chemical");
+      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
+      resultPrinter.printRow("  Mention matching", chemicalMentionStats);
+      return resultPrinter.toString();
+    }
+
+    public String getCIDResult() {
+      ResultPrinter resultPrinter = new ResultPrinter();
+      resultPrinter.printTitle();
+      resultPrinter.printRow("CID", cdrStats);
+      return resultPrinter.toString();
+    }
+
+    public String getResult() {
+      ResultPrinter resultPrinter = new ResultPrinter();
+      resultPrinter.printTitle();
+      resultPrinter.printRow("Disease");
+      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
+      resultPrinter.printRow("  Mention matching", diseaseMentionStats);
+      resultPrinter.printRow("Chemical");
+      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
+      resultPrinter.printRow("  Mention matching", chemicalMentionStats);
+      resultPrinter.printRow("CID", cdrStats);
+      return resultPrinter.toString();
+    }
+  }
+
   private final List<PubTatorDocument> goldDocuments;
   private final List<PubTatorDocument> predDocuments;
 
-  private PrecisionRecallStats diseaseMentionStats;
-  private PrecisionRecallStats chemicalMentionStats;
+  PrecisionRecallStats diseaseMentionStats;
+  PrecisionRecallStats chemicalMentionStats;
 
-  private PrecisionRecallStats diseaseApproMentionStats;
-  private PrecisionRecallStats chemicalApproMentionStats;
+  PrecisionRecallStats diseaseApproMentionStats;
+  PrecisionRecallStats chemicalApproMentionStats;
 
-  private PrecisionRecallStats cdrStats;
+  PrecisionRecallStats cdrStats;
 
-  private PrecisionRecallStats cdrWithMentionStats;
-  private PrecisionRecallStats cdrWithApproMentionStats;
+  PrecisionRecallStats cdrWithMentionStats;
+  PrecisionRecallStats cdrWithApproMentionStats;
 
-  private PrecisionRecallStats diseaseIdStats;
-  private PrecisionRecallStats chemicalIdStats;
+  PrecisionRecallStats diseaseIdStats;
+  PrecisionRecallStats chemicalIdStats;
 
   private static final BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation>
       mentionStrictBiPredicate =
@@ -61,47 +149,11 @@ public class PubTatorEval {
     this.predDocuments = pred;
   }
 
-  public String getNERResult() {
-    ResultPrinter resultPrinter = new ResultPrinter();
-    resultPrinter.printTitle();
-    resultPrinter.printRow("Disease");
-    resultPrinter.printRow("  Concept id matching", diseaseIdStats);
-    resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
-    resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
-    resultPrinter.printRow("Chemical");
-    resultPrinter.printRow("  Concept id matching", chemicalIdStats);
-    resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
-    resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
-    return resultPrinter.toString();
-  }
+  public abstract String getNERResult();
 
-  public String getCIDResult () {
-    ResultPrinter resultPrinter = new ResultPrinter();
-    resultPrinter.printTitle();
-    resultPrinter.printRow("CID");
-    resultPrinter.printRow("  Concept id matching", cdrStats);
-    resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
-    resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
-    return resultPrinter.toString();
-  }
+  public abstract String getCIDResult();
 
-  public String getResult() {
-    ResultPrinter resultPrinter = new ResultPrinter();
-    resultPrinter.printTitle();
-    resultPrinter.printRow("Disease");
-    resultPrinter.printRow("  Concept id matching", diseaseIdStats);
-    resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
-    resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
-    resultPrinter.printRow("Chemical");
-    resultPrinter.printRow("  Concept id matching", chemicalIdStats);
-    resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
-    resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
-    resultPrinter.printRow("CID");
-    resultPrinter.printRow("  Concept id matching", cdrStats);
-    resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
-    resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
-    return resultPrinter.toString();
-  }
+  public abstract String getResult();
 
   public void eval() {
     evalMention();
@@ -112,8 +164,8 @@ public class PubTatorEval {
   }
 
   private void evalId() {
-    Collection<String> goldIds = uniqueIds(getAllMentions(goldDocuments, "Disease"));
-    Collection<String> predIds = uniqueIds(getAllMentions(predDocuments, "Disease"));
+    List<String> goldIds = uniqueIds(getAllMentions(goldDocuments, "Disease"));
+    List<String> predIds = uniqueIds(getAllMentions(predDocuments, "Disease"));
 
     final BiPredicate<String, String> biPredicate = (m1, m2) -> m1.equals(m2);
     diseaseIdStats = eval(goldIds, predIds, (m1, m2) -> m1.equals(m2));
@@ -123,7 +175,7 @@ public class PubTatorEval {
     chemicalIdStats = eval(goldIds, predIds, biPredicate);
   }
 
-  private <E extends PubTatorMentionAnnotation> Collection<String> uniqueIds(Collection<E> list) {
+  private <E extends PubTatorMentionAnnotation> List<String> uniqueIds(Collection<E> list) {
     Set<String> keys = Sets.newHashSet();
     for (E e : list) {
       for (String conceptId : e.getConceptIds()) {
@@ -131,7 +183,7 @@ public class PubTatorEval {
         keys.add(key);
       }
     }
-    return keys;
+    return Lists.newArrayList(keys);
   }
 
   private void evalMention() {
@@ -157,26 +209,30 @@ public class PubTatorEval {
     goldMentions.addAll(getAllMentions(goldDocuments, "Chemical"));
     predMentions.addAll(getAllMentions(predDocuments, "Chemical"));
 
-
-    PrecisionRecallStats<PubTatorRelationAnnotation> stats1 = new PrecisionRecallStats();
+    PrecisionRecallStats<PubTatorRelationAnnotation> stats = new PrecisionRecallStats<>();
+    boolean[] foundInGold = new boolean[predRelations.size()];
     for (PubTatorRelationAnnotation gold : goldRelations) {
-      Optional<PubTatorRelationAnnotation> o = find(gold, predRelations, cdiBiPredicate);
-      if (o.isPresent() && findMention(gold, o.get(), goldMentions, predMentions, biPredicate)) {
-        stats1.incrementTP(gold);
+      boolean found = false;
+      for (int i = 0; i < predRelations.size(); i++) {
+        PubTatorRelationAnnotation pred = predRelations.get(i);
+        if (cdiBiPredicate.test(gold, pred) &&
+            findMention(gold, pred, goldMentions, predMentions, biPredicate)) {
+          foundInGold[i] = true;
+          found = true;
+        }
+      }
+      if (found) {
+        stats.incrementTP(gold);
       } else {
-        stats1.incrementFN(gold);
+        stats.incrementFN(gold);
       }
     }
-    PrecisionRecallStats stats2 = new PrecisionRecallStats();
-    for (PubTatorRelationAnnotation pred : predRelations) {
-      Optional<PubTatorRelationAnnotation> o = find(pred, goldRelations, cdiBiPredicate);
-      if (o.isPresent() && findMention(o.get(), pred, goldMentions, predMentions, biPredicate)) {
-        stats2.incrementTP(o.get());
-      } else {
-        stats2.incrementFP(pred);
+    for (int i = 0; i < foundInGold.length; i++) {
+      if (!foundInGold[i]) {
+        stats.incrementFP(predRelations.get(i));
       }
     }
-    return new PrecisionRecallStats<>(stats1.getTPs(), stats2.getFPs(), stats1.getFNs());
+    return stats;
   }
 
   private boolean findMention(PubTatorRelationAnnotation gold,
@@ -232,23 +288,27 @@ public class PubTatorEval {
     cdrStats = eval(goldRelations, predRelations, cdiBiPredicate);
   }
 
-  private <E> PrecisionRecallStats eval(Collection<E> golds, Collection<E> preds,
+  private <E> PrecisionRecallStats eval(List<E> golds, List<E> preds,
       BiPredicate<E, E> biPredicate) {
-    PrecisionRecallStats stats1 = evalOneWay(golds, preds, biPredicate);
-    PrecisionRecallStats stats2 = evalOneWay(preds, golds, biPredicate);
-    checkArgument(stats1.getTP() == stats1.getTP(), "Error");
-    return new PrecisionRecallStats(stats1.getTPs(), stats2.getFPs(), stats1.getFNs());
-  }
-
-  private <E> PrecisionRecallStats evalOneWay(Collection<E> golds, Collection<E> preds,
-      BiPredicate<E, E> biPredicate) {
-    PrecisionRecallStats stats = new PrecisionRecallStats();
+    PrecisionRecallStats<E> stats = new PrecisionRecallStats<>();
+    boolean[] foundInGold = new boolean[preds.size()];
     for (E gold : golds) {
-      Optional<E> o = find(gold, preds, biPredicate);
-      if (o.isPresent()) {
+      boolean found = false;
+      for (int i = 0; i < preds.size(); i++) {
+        if (biPredicate.test(gold, preds.get(i))) {
+          foundInGold[i] = true;
+          found = true;
+        }
+      }
+      if (found) {
         stats.incrementTP(gold);
       } else {
         stats.incrementFN(gold);
+      }
+    }
+    for (int i = 0; i < foundInGold.length; i++) {
+      if (!foundInGold[i]) {
+        stats.incrementFP(preds.get(i));
       }
     }
     return stats;
@@ -257,7 +317,7 @@ public class PubTatorEval {
   private <E> Optional<E> find(E target, Collection<E> list, BiPredicate<E, E> biPredicate) {
     return list.stream()
         .filter(r -> biPredicate.test(target, r))
-        .findFirst();
+        .findAny();
   }
 
   private List<PubTatorRelationAnnotation> getAllRelations(Collection<PubTatorDocument> documents,

@@ -6,12 +6,9 @@ import java.text.DecimalFormat;
 
 public class ResultPrinter {
 
-  private static final String FORMAT = "%-31s %7s (%5s) %7s (%5s) %7s %7s %7s";
-  private static final String HEADER = String.format(
-      FORMAT, "Class", "gold", "match", "answer", "match", "recall",
-      "prec.", "fscore");
-  private static final String HEADER_LINE = Strings
-      .repeat("-", HEADER.length());
+  private final String format;
+  private final String header;
+  private final String headerLine;
 
   private static final DecimalFormat PERCENTAGE_FORMAT = new DecimalFormat(
       "00.00");
@@ -22,12 +19,21 @@ public class ResultPrinter {
 
 
   public ResultPrinter() {
+    this(25);
+  }
+
+  public ResultPrinter(int firstColumnWidth) {
     display = new StringBuilder();
+    format = "%-" + firstColumnWidth + "s %7s (%5s) %7s (%5s) %7s %7s %7s";
+    header = String.format(
+        format, "Class", "gold", "match", "answer", "match", "recall",
+        "prec.", "fscore");
+    headerLine = Strings.repeat("-", header.length());
   }
 
   public void printTitle() {
-    display.append(HEADER).append(System.lineSeparator());
-    display.append(HEADER_LINE).append(System.lineSeparator());
+    display.append(header).append(System.lineSeparator());
+    display.append(headerLine).append(System.lineSeparator());
   }
 
   public void printRow(String type) {
@@ -36,7 +42,7 @@ public class ResultPrinter {
 
   public void printRow(String type, PrecisionRecallStats stats) {
     String row = String.format(
-        FORMAT,
+        format,
         type,
         getInteger(stats.getTP() + stats.getFN()),
         getInteger(stats.getTP()),

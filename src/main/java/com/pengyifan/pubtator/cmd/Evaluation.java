@@ -20,6 +20,10 @@ public class Evaluation {
   @Option(name = "-f", usage = "Specifies the format of input", metaVar = "FORMAT")
   private String format = null;
 
+  @Option(name = "-t", usage = "Specifies the type of evaluation. dner, cid, or all (default)",
+      metaVar = "TYPE")
+  private String type = "all";
+
   @Argument
   private List<String> arguments = Lists.newArrayList();
 
@@ -57,6 +61,31 @@ public class Evaluation {
       printHelp(parser);
       return;
     }
+    switch (format) {
+    case "bioc":
+    case "pubtator":
+      break;
+    default:
+      System.err.printf("Format `%s` is not supported\n", format);
+      printHelp(parser);
+      return;
+    }
+
+    if (type == null) {
+      System.err.println("Missing -t");
+      printHelp(parser);
+      return;
+    }
+    switch (type) {
+    case "dner":
+    case "cid":
+    case "all":
+      break;
+    default:
+      System.err.printf("Type `%s` is not supported\n", type);
+      printHelp(parser);
+      return;
+    }
 
     if (arguments.size() != 2) {
       System.err.println("Only two files are supported");
@@ -81,13 +110,24 @@ public class Evaluation {
           Files.newBufferedReader(Paths.get(arguments.get(1))));
       break;
     default:
-      System.err.printf("Format `%s` is not supported\n", format);
-      printHelp(parser);
       return;
     }
 
-    PubTatorEval eval = new PubTatorEval(goldDocuments, predDocuments);
+    PubTatorEval eval = new PubTatorEval.SimpleEval(goldDocuments, predDocuments);
     eval.eval();
-    System.out.println(eval.getResult());
+
+    switch (type) {
+    case "dner":
+      System.out.println(eval.getNERResult());
+      break;
+    case "cid":
+      System.out.println(eval.getCIDResult());
+      break;
+    case "all":
+      System.out.println(eval.getResult());
+      break;
+    default:
+      return;
+    }
   }
 }
