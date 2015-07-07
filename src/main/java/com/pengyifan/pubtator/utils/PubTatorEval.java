@@ -77,9 +77,6 @@ public abstract class PubTatorEval {
       resultPrinter.printRow("Disease");
       resultPrinter.printRow("  Concept id matching", diseaseIdStats);
       resultPrinter.printRow("  Mention matching", diseaseMentionStats);
-      resultPrinter.printRow("Chemical");
-      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
-      resultPrinter.printRow("  Mention matching", chemicalMentionStats);
       return resultPrinter.toString();
     }
 

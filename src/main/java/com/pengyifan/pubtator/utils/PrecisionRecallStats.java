@@ -63,7 +63,7 @@ public class PrecisionRecallStats<E> {
    */
   public double getPrecision() {
     if (getTP() == 0 && getFP() == 0) {
-      return 1.0;
+      return Double.NaN;
     }
     return ((double) getTP()) / (getTP() + getFP());
   }
@@ -74,7 +74,7 @@ public class PrecisionRecallStats<E> {
    */
   public double getRecall() {
     if (getTP() == 0 && getFN() == 0) {
-      return 1.0;
+      return Double.NaN;
     }
     return ((double) getTP()) / (getTP() + getFN());
   }
