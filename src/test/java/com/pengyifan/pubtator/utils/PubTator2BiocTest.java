@@ -3,11 +3,9 @@ package com.pengyifan.pubtator.utils;
 import com.pengyifan.bioc.BioCDocument;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.io.PubTatorIO;
-import com.pengyifan.pubtator.utils.PubTator2Bioc;
 import org.junit.Test;
 
 import java.io.FileReader;
-import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -20,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class PubTator2BiocTest {
 
-  private static final PubTator2Bioc converter = new PubTator2Bioc();
+  private static final PubTator2BioC converter = new PubTator2BioC();
 
   @Test
   public void testConvert() throws Exception {

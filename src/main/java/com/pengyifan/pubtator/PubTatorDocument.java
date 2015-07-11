@@ -44,12 +44,13 @@ public class PubTatorDocument {
     if (getAbstract() != null) {
       sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
     }
-    for(PubTatorMentionAnnotation m: getMentions()) {
-      sj.add(m.toPubTatorString());
-    }
-    for(PubTatorRelationAnnotation r: getRelations()) {
-      sj.add(r.toPubTatorString());
-    }
+    getMentions().stream()
+        .sorted((m1,m2) -> Integer.compare(m1.getStart(), m2.getStart()))
+        .forEach(m -> sj.add(m.toPubTatorString()));
+
+    getRelations().stream()
+        .sorted((r1,r2) -> r1.getId().compareTo(r2.getId()))
+        .forEach(r -> sj.add(r.toPubTatorString()));
     return sj.toString();
   }
 

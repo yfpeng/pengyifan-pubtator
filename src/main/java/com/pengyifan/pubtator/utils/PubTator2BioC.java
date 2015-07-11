@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class PubTator2Bioc {
+public class PubTator2BioC {
   public BioCDocument convert(PubTatorDocument pubTatorDocument) {
     int menId = 0;
     int relId = 0;

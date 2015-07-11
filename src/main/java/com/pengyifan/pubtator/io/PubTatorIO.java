@@ -29,6 +29,5 @@ public class PubTatorIO {
       throws IOException {
     writer.write(Joiner.on("\n\n").join(documentList));
     writer.flush();
-    writer.close();
   }
 }
