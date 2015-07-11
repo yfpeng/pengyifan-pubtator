@@ -9,6 +9,7 @@ doc/*
 /logs
 /config
 /resources
+/tmp
 
 # Python
 *.pyc

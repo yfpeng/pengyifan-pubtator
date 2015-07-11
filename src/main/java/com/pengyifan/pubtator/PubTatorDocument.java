@@ -41,7 +41,9 @@ public class PubTatorDocument {
   public String toPubTatorString() {
     StringJoiner sj = new StringJoiner("\n");
     sj.add(Joiner.on("|").join(getId(), "t", getTitle()));
-    sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
+    if (getAbstract() != null) {
+      sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
+    }
     for(PubTatorMentionAnnotation m: getMentions()) {
       sj.add(m.toPubTatorString());
     }
