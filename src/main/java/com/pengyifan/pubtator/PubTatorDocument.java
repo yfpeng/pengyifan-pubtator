@@ -38,11 +38,17 @@ public class PubTatorDocument {
         .collect(Collectors.toList());
   }
 
+  public String getText() {
+    return getTitle() + "\n" + getAbstract();
+  }
+
   public String toPubTatorString() {
     StringJoiner sj = new StringJoiner("\n");
     sj.add(Joiner.on("|").join(getId(), "t", getTitle()));
-    sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
 
+    if (getAbstract() != null) {
+      sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
+    }
     getMentions().stream()
         .sorted((m1, m2) -> Integer.compare(m1.getStart(), m2.getStart()))
         .forEach(m -> sj.add(m.toPubTatorString()));
