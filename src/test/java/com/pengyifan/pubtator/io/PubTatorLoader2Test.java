@@ -1,13 +1,13 @@
 package com.pengyifan.pubtator.io;
 
 import com.pengyifan.pubtator.PubTatorDocument;
-import junit.framework.TestCase;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-public class PubTatorLoader2Test extends TestCase {
+public class PubTatorLoader2Test {
 
   private static final String line1 = "26094|t|Antihypertensive drugs and depression: a " +
       "reappraisal.\n" +
@@ -94,6 +94,7 @@ public class PubTatorLoader2Test extends TestCase {
       "26094\t601\t612\tpsychiatric\tDisease\tD001523\n" +
       "26094\tCID\tD008750\tD003866\n";
 
+  @Test
   public void testRead() throws Exception {
     testRead(line7);
   }

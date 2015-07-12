@@ -45,7 +45,6 @@ public class PubTatorDocument {
   public String toPubTatorString() {
     StringJoiner sj = new StringJoiner("\n");
     sj.add(Joiner.on("|").join(getId(), "t", getTitle()));
-
     if (getAbstract() != null) {
       sj.add(Joiner.on("|").join(getId(), "a", getAbstract()));
     }
@@ -56,7 +55,6 @@ public class PubTatorDocument {
     getRelations().stream()
         .sorted((r1, r2) -> r1.getId().compareTo(r2.getId()))
         .forEach(r -> sj.add(r.toPubTatorString()));
-
     return sj.toString();
   }
 
