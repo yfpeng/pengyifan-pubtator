@@ -160,6 +160,42 @@ public abstract class PubTatorEval {
     cdrWithApproMentionStats = evalCdrWithMention(mentionApproxBiPredicate);
   }
 
+  public PrecisionRecallStats getChemicalIdStats() {
+    return chemicalIdStats;
+  }
+
+  public PrecisionRecallStats getDiseaseMentionStats() {
+    return diseaseMentionStats;
+  }
+
+  public PrecisionRecallStats getChemicalMentionStats() {
+    return chemicalMentionStats;
+  }
+
+  public PrecisionRecallStats getDiseaseApproMentionStats() {
+    return diseaseApproMentionStats;
+  }
+
+  public PrecisionRecallStats getChemicalApproMentionStats() {
+    return chemicalApproMentionStats;
+  }
+
+  public PrecisionRecallStats getCdrStats() {
+    return cdrStats;
+  }
+
+  public PrecisionRecallStats getCdrWithMentionStats() {
+    return cdrWithMentionStats;
+  }
+
+  public PrecisionRecallStats getCdrWithApproMentionStats() {
+    return cdrWithApproMentionStats;
+  }
+
+  public PrecisionRecallStats getDiseaseIdStats() {
+    return diseaseIdStats;
+  }
+
   private void evalId() {
     List<String> goldIds = uniqueIds(getAllMentions(goldDocuments, "Disease"));
     List<String> predIds = uniqueIds(getAllMentions(predDocuments, "Disease"));
