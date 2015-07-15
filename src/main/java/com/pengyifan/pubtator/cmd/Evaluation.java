@@ -2,8 +2,9 @@ package com.pengyifan.pubtator.cmd;
 
 import com.google.common.collect.Lists;
 import com.pengyifan.pubtator.PubTatorDocument;
+import com.pengyifan.pubtator.eval.DetailedTextDisplay;
 import com.pengyifan.pubtator.io.PubTatorIO;
-import com.pengyifan.pubtator.utils.PubTatorEval;
+import com.pengyifan.pubtator.eval.PubTatorEval;
 import org.kohsuke.args4j.*;
 import org.xml.sax.SAXException;
 
@@ -113,21 +114,18 @@ public class Evaluation {
       return;
     }
 
-    PubTatorEval eval = new PubTatorEval.SimpleEval(goldDocuments, predDocuments);
+    PubTatorEval eval = new PubTatorEval(goldDocuments, predDocuments);
     eval.eval();
 
+    int mode = 2;
     switch (type) {
     case "dner":
-      System.out.println(eval.getNERResult());
+      mode = 0;
       break;
     case "cid":
-      System.out.println(eval.getCIDResult());
+      mode = 1;
       break;
-    case "all":
-      System.out.println(eval.getResult());
-      break;
-    default:
-      return;
     }
+    System.out.println(eval.getResult(mode, new DetailedTextDisplay()));
   }
 }
