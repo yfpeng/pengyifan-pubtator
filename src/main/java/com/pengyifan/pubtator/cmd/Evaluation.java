@@ -56,11 +56,6 @@ public class Evaluation {
       return;
     }
 
-    if (format == null) {
-      System.err.println("Missing -f");
-      printHelp(parser);
-      return;
-    }
     switch (format) {
     case "bioc":
     case "pubtator":
@@ -71,11 +66,6 @@ public class Evaluation {
       return;
     }
 
-    if (type == null) {
-      System.err.println("Missing -t");
-      printHelp(parser);
-      return;
-    }
     switch (type) {
     case "dner":
     case "cid":
