@@ -1,4 +1,4 @@
-package com.pengyifan.pubtator.utils;
+package com.pengyifan.pubtator.eval;
 
 import com.google.common.base.Strings;
 

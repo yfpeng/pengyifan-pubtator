@@ -1,4 +1,4 @@
-package com.pengyifan.pubtator.utils;
+package com.pengyifan.pubtator.eval;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -14,93 +14,7 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
-public abstract class PubTatorEval {
-
-  public static class DetailedEval extends PubTatorEval {
-
-    public DetailedEval(List<PubTatorDocument> gold, List<PubTatorDocument> pred) {
-      super(gold, pred);
-    }
-
-    public String getNERResult() {
-      ResultPrinter resultPrinter = new ResultPrinter();
-      resultPrinter.printTitle();
-      resultPrinter.printRow("Disease");
-      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
-      resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
-      resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
-      resultPrinter.printRow("Chemical");
-      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
-      resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
-      resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
-      return resultPrinter.toString();
-    }
-
-    public String getCIDResult() {
-      ResultPrinter resultPrinter = new ResultPrinter();
-      resultPrinter.printTitle();
-      resultPrinter.printRow("CID");
-      resultPrinter.printRow("  Concept id matching", cdrStats);
-      resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
-      resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
-      return resultPrinter.toString();
-    }
-
-    public String getResult() {
-      ResultPrinter resultPrinter = new ResultPrinter();
-      resultPrinter.printTitle();
-      resultPrinter.printRow("Disease");
-      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
-      resultPrinter.printRow("  Mention (Strict matching)", diseaseMentionStats);
-      resultPrinter.printRow("  Mention (Appro. matching)", diseaseApproMentionStats);
-      resultPrinter.printRow("Chemical");
-      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
-      resultPrinter.printRow("  Mention (Strict matching)", chemicalMentionStats);
-      resultPrinter.printRow("  Mention (Appro. matching)", chemicalApproMentionStats);
-      resultPrinter.printRow("CID");
-      resultPrinter.printRow("  Concept id matching", cdrStats);
-      resultPrinter.printRow("  Mention (Strict matching)", cdrWithMentionStats);
-      resultPrinter.printRow("  Mention (Appro matching)", cdrWithApproMentionStats);
-      return resultPrinter.toString();
-    }
-  }
-
-  public static class SimpleEval extends PubTatorEval {
-
-    public SimpleEval(List<PubTatorDocument> gold, List<PubTatorDocument> pred) {
-      super(gold, pred);
-    }
-
-    public String getNERResult() {
-      ResultPrinter resultPrinter = new ResultPrinter();
-      resultPrinter.printTitle();
-      resultPrinter.printRow("Disease");
-      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
-      resultPrinter.printRow("  Mention matching", diseaseMentionStats);
-      return resultPrinter.toString();
-    }
-
-    public String getCIDResult() {
-      ResultPrinter resultPrinter = new ResultPrinter();
-      resultPrinter.printTitle();
-      resultPrinter.printRow("CID", cdrStats);
-      return resultPrinter.toString();
-    }
-
-    public String getResult() {
-      ResultPrinter resultPrinter = new ResultPrinter();
-      resultPrinter.printTitle();
-      resultPrinter.printRow("Disease");
-      resultPrinter.printRow("  Concept id matching", diseaseIdStats);
-      resultPrinter.printRow("  Mention matching", diseaseMentionStats);
-      resultPrinter.printRow("Chemical");
-      resultPrinter.printRow("  Concept id matching", chemicalIdStats);
-      resultPrinter.printRow("  Mention matching", chemicalMentionStats);
-      resultPrinter.printRow("CID", cdrStats);
-      return resultPrinter.toString();
-    }
-  }
-
+public class PubTatorEval {
   private final List<PubTatorDocument> goldDocuments;
   private final List<PubTatorDocument> predDocuments;
 
@@ -146,11 +60,20 @@ public abstract class PubTatorEval {
     this.predDocuments = pred;
   }
 
-  public abstract String getNERResult();
-
-  public abstract String getCIDResult();
-
-  public abstract String getResult();
+  /**
+   *
+   * @param mode 1-dner, 2-cid, 3-all
+   * @return
+   */
+  public String getResult(int mode, EvalDisplay display) {
+    if (mode == 0) {
+      return display.getDiseaseResult(this);
+    } else if (mode == 1) {
+      return display.getChemicalResult(this);
+    } else {
+      return display.getAllResult(this);
+    }
+  }
 
   public void eval() {
     evalMention();
