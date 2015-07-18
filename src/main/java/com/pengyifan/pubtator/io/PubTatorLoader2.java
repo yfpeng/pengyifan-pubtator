@@ -3,9 +3,11 @@ package com.pengyifan.pubtator.io;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.common.truth.StringUtil;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -82,12 +84,10 @@ public class PubTatorLoader2 implements Closeable {
           state = 0;
         } else {
           String[] fields = currentLine.split("[\\t]");
-          if (fields.length == 4 || fields.length == 5) {
-            // Relation
-            parseRelation(fields);
-          } else if (fields.length == 6 || fields.length == 7) {
-            // Mention
-            parseMention(fields);
+          if (parseMention(fields)) {
+            ;
+          } else if (parseRelation(fields)) {
+            ;
           } else {
             // error
             appendErrorMessage();
@@ -141,7 +141,7 @@ public class PubTatorLoader2 implements Closeable {
     appendErrorMessage();
   }
 
-  private void parseMention(String[] fields) {
+  private boolean parseMention(String[] fields) {
     try {
       checkArgument(fields[0].equals(currentDocument.getId()),
           "Different doc id: %s, %s", currentDocument.getId(), fields[0]);
@@ -156,19 +156,25 @@ public class PubTatorLoader2 implements Closeable {
 
       String type = fields[4];
       Set<String> conceptIds = Sets.newHashSet();
-      for (String conceptId : Splitter.on("|").split(fields[5])) {
-        conceptIds.add(finalizeConceptId(conceptId));
+      if (fields.length >= 6) {
+        for (String conceptId : Splitter.on("|").split(fields[5])) {
+          conceptIds.add(finalizeConceptId(conceptId));
+        }
       }
-      String comment = fields.length == 7 ? fields[6] : null;
+      String comment = null;
+      if (fields.length >= 7) {
+        comment = fields[6];
+      }
 
       currentDocument.addAnnotation(new PubTatorMentionAnnotation(
           currentDocument.getId(), type, start, end, actualText, conceptIds, comment));
+      return true;
     } catch(Exception e) {
-      appendErrorMessage(e);
+      return false;
     }
   }
 
-  private void parseRelation(String[] fields) {
+  private boolean parseRelation(String[] fields) {
     try {
       checkArgument(fields[0].equals(currentDocument.getId()),
           "Different doc id: %s, %s", currentDocument.getId(), fields[0]);
@@ -178,14 +184,15 @@ public class PubTatorLoader2 implements Closeable {
       String conceptId2 = finalizeConceptId(fields[3]);
 
       checkArgument(!currentDocument.getMentions(conceptId1).isEmpty(),
-          "Cannot concept [%s] in the document.", conceptId1);
+          "Cannot find concept [%s] in the document.", conceptId1);
       checkArgument(!currentDocument.getMentions(conceptId2).isEmpty(),
-          "Cannot concept [%s] in the document.", conceptId2);
+          "Cannot find concept [%s] in the document.", conceptId2);
 
       currentDocument.addAnnotation(
           new PubTatorRelationAnnotation(currentDocument.getId(), type, conceptId1, conceptId2));
+      return true;
     } catch(Exception e) {
-      appendErrorMessage(e);
+      return false;
     }
   }
 
