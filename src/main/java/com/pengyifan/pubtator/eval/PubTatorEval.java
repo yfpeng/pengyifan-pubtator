@@ -69,7 +69,7 @@ public class PubTatorEval {
     if (mode == 0) {
       return display.getDiseaseResult(this);
     } else if (mode == 1) {
-      return display.getChemicalResult(this);
+      return display.getCIDResult(this);
     } else {
       return display.getAllResult(this);
     }

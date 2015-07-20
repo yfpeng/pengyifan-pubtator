@@ -22,7 +22,7 @@ public class SimpleTextDisplay extends EvalDisplay {
     case CID:
       resultPrinter.printRow("CID");
       resultPrinter.printRow("  Concept id matching", eval.getCdrStats());
-      resultPrinter.printRow("  Mention matching", eval.getCdrWithMentionStats());
+//      resultPrinter.printRow("  Mention matching", eval.getCdrWithMentionStats());
       break;
     }
   }

@@ -157,7 +157,10 @@ public class PubTatorLoader2 implements Closeable {
       String type = fields[4];
       Set<String> conceptIds = Sets.newHashSet();
       for (String conceptId : Splitter.on("|").split(fields[5])) {
-        conceptIds.add(finalizeConceptId(conceptId));
+        String normalizedConceptId = finalizeConceptId(conceptId);
+        if (normalizedConceptId != null) {
+          conceptIds.add(normalizedConceptId);
+        }
       }
       String comment = fields.length == 7 ? fields[6] : null;
 
