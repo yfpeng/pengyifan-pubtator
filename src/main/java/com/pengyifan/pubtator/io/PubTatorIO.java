@@ -18,9 +18,14 @@ public class PubTatorIO {
 
   public static List<PubTatorDocument> readPubTatorFormat(Reader reader)
       throws IOException {
-    try (PubTatorLoader2 loader2 = new PubTatorLoader2(reader)) {
-      return loader2.read();
+    PubTatorLoader2 loader2 = new PubTatorLoader2(reader);
+    List<PubTatorDocument> documents = loader2.read();
+    loader2.close();
+
+    if (loader2.hasErrors()) {
+      throw new IOException(loader2.getErrorMessage());
     }
+    return documents;
   }
 
   public static String toPubTatorString(List<PubTatorDocument> documentList) {
