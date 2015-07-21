@@ -2,10 +2,7 @@ package com.pengyifan.pubtator.utils;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
-import com.pengyifan.bioc.BioCAnnotation;
-import com.pengyifan.bioc.BioCDocument;
-import com.pengyifan.bioc.BioCLocation;
-import com.pengyifan.bioc.BioCPassage;
+import com.pengyifan.bioc.*;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
@@ -45,7 +42,25 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
     for (BioCAnnotation annotation : bioCDocument.getAnnotations()) {
       convertRelation(annotation, pDoc);
     }
+    for (BioCRelation relation : bioCDocument.getRelations()) {
+      convertRelation(relation, pDoc);
+    }
     return pDoc;
+  }
+
+  private void convertRelation(BioCRelation relation, PubTatorDocument pDoc) {
+    Optional<String> type = relation.getInfon("relation");
+    checkArgument(type.isPresent(), "No type found");
+
+    String conceptId1 = finalizeConceptId(relation.getInfon("Chemical").get());
+    String conceptId2 = finalizeConceptId(relation.getInfon("Disease").get());
+    if (conceptId1.compareTo(conceptId2) > 0) {
+      String tmp = conceptId1;
+      conceptId1 = conceptId2;
+      conceptId2 = tmp;
+    }
+    pDoc.addAnnotation(
+        new PubTatorRelationAnnotation(pDoc.getId(), type.get(), conceptId1, conceptId2));
   }
 
   private void convertRelation(BioCAnnotation annotation, PubTatorDocument pDoc) {
@@ -66,6 +81,9 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
   private String finalizeConceptId(String conceptId) {
     checkArgument(conceptId != null && conceptId.length() != 0, "Cannot apply conceptId: %s",
         conceptId);
+    if (conceptId == null || conceptId.length() == 0 || conceptId.equals("-1")) {
+      return null;
+    }
     int col = conceptId.indexOf(':');
     if (col != -1) {
       conceptId = conceptId.substring(col + 1);
@@ -93,7 +111,10 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
     Set<String> conceptIds = Sets.newHashSet();
     if (conceptIdList.isPresent()) {
       for (String c : Splitter.on("|").split(conceptIdList.get().trim())) {
-        conceptIds.add(finalizeConceptId(c));
+        String normalizedConceptId = finalizeConceptId(c);
+        if (normalizedConceptId != null) {
+          conceptIds.add(normalizedConceptId);
+        }
       }
     }
 

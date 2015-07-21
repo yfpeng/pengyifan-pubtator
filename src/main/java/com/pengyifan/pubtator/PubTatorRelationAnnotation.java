@@ -10,11 +10,20 @@ public class PubTatorRelationAnnotation extends PubTatorAnnotation {
 
   private String conceptId1;
   private String conceptId2;
+  private String comment;
 
   public PubTatorRelationAnnotation(String id, String type, String conceptId1, String conceptId2) {
     super(id, type);
     this.conceptId1 = conceptId1;
     this.conceptId2 = conceptId2;
+  }
+
+  public PubTatorRelationAnnotation(String id, String type, String conceptId1, String conceptId2,
+      String comment) {
+    super(id, type);
+    this.conceptId1 = conceptId1;
+    this.conceptId2 = conceptId2;
+    this.comment = comment;
   }
 
   public String getConceptId1() {
@@ -25,9 +34,17 @@ public class PubTatorRelationAnnotation extends PubTatorAnnotation {
     return conceptId2;
   }
 
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
   @Override
   public String toPubTatorString() {
-    return Joiner.on("\t").join(getId(), getType(), conceptId1, conceptId2);
+    return Joiner.on("\t").skipNulls().join(getId(), getType(), conceptId1, conceptId2, comment);
   }
 
   @Override
@@ -37,6 +54,7 @@ public class PubTatorRelationAnnotation extends PubTatorAnnotation {
         .append("type", getType())
         .append("conceptId1", getConceptId1())
         .append("conceptId2", getConceptId2())
+        .append("comment", getComment())
         .toString();
   }
 

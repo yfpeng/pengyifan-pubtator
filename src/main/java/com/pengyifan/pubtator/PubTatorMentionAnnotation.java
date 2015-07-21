@@ -51,6 +51,14 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
     return conceptIds;
   }
 
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
   @Override
   public String toPubTatorString() {
     return Joiner.on("\t").skipNulls().join(getId(), start, end, text, getType(),
@@ -66,6 +74,7 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
         .append("end", getEnd())
         .append("text", getText())
         .append("conceptId", Joiner.on('|').join(getConceptIds()))
+        .append("comment", getComment())
         .toString();
   }
 

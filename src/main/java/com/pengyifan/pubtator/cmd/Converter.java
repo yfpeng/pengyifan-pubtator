@@ -56,7 +56,7 @@ public class Converter {
     System.err.println();
   }
 
-  private void doMain(String[] args) throws IOException, XMLStreamException {
+  public void doMain(String[] args) throws IOException, XMLStreamException {
     ParserProperties properties = ParserProperties.defaults()
         .withUsageWidth(80);
     CmdLineParser parser = new CmdLineParser(this, properties);

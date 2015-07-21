@@ -2,7 +2,9 @@ package com.pengyifan.pubtator.cmd;
 
 import com.google.common.collect.Lists;
 import com.pengyifan.pubtator.PubTatorDocument;
+import com.pengyifan.pubtator.PubTatorRelationAnnotation;
 import com.pengyifan.pubtator.eval.DetailedTextDisplay;
+import com.pengyifan.pubtator.eval.PrecisionRecallStats;
 import com.pengyifan.pubtator.io.PubTatorIO;
 import com.pengyifan.pubtator.eval.PubTatorEval;
 import org.kohsuke.args4j.*;
@@ -117,5 +119,14 @@ public class Evaluation {
       break;
     }
     System.out.println(eval.getResult(mode, new DetailedTextDisplay()));
+//    PrecisionRecallStats<PubTatorRelationAnnotation> cdr = eval.getCdrStats();
+//    for(PubTatorRelationAnnotation r: cdr.getFPs()) {
+//      System.out.printf("INFO\tFP\trelation\t%s\tCID\tMESH:%s\tMESH:%s\n",
+//          r.getId(), r.getConceptId1(), r.getConceptId2());
+//    }
+//        PrecisionRecallStats<String> cdr = eval.getDiseaseIdStats();
+//        for(String r: cdr.getFNs()) {
+//          System.out.printf("INFO\tFN\tid\t%s\n", r);
+//        }
   }
 }

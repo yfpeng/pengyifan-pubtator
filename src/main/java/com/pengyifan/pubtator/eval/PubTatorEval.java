@@ -7,10 +7,7 @@ import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
 import org.apache.commons.lang3.Range;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -18,19 +15,19 @@ public class PubTatorEval {
   private final List<PubTatorDocument> goldDocuments;
   private final List<PubTatorDocument> predDocuments;
 
-  PrecisionRecallStats diseaseMentionStats;
-  PrecisionRecallStats chemicalMentionStats;
+  PrecisionRecallStats<PubTatorMentionAnnotation> diseaseMentionStats;
+  PrecisionRecallStats<PubTatorMentionAnnotation> chemicalMentionStats;
 
-  PrecisionRecallStats diseaseApproMentionStats;
-  PrecisionRecallStats chemicalApproMentionStats;
+  PrecisionRecallStats<PubTatorMentionAnnotation> diseaseApproMentionStats;
+  PrecisionRecallStats<PubTatorMentionAnnotation> chemicalApproMentionStats;
 
-  PrecisionRecallStats cdrStats;
+  PrecisionRecallStats<PubTatorRelationAnnotation> cdrStats;
 
-  PrecisionRecallStats cdrWithMentionStats;
-  PrecisionRecallStats cdrWithApproMentionStats;
+  PrecisionRecallStats<PubTatorRelationAnnotation> cdrWithMentionStats;
+  PrecisionRecallStats<PubTatorRelationAnnotation> cdrWithApproMentionStats;
 
-  PrecisionRecallStats diseaseIdStats;
-  PrecisionRecallStats chemicalIdStats;
+  PrecisionRecallStats<String> diseaseIdStats;
+  PrecisionRecallStats<String> chemicalIdStats;
 
   private static final BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation>
       mentionStrictBiPredicate =
@@ -61,7 +58,6 @@ public class PubTatorEval {
   }
 
   /**
-   *
    * @param mode 1-dner, 2-cid, 3-all
    * @return
    */
@@ -83,39 +79,39 @@ public class PubTatorEval {
     cdrWithApproMentionStats = evalCdrWithMention(mentionApproxBiPredicate);
   }
 
-  public PrecisionRecallStats getChemicalIdStats() {
+  public PrecisionRecallStats<String> getChemicalIdStats() {
     return chemicalIdStats;
   }
 
-  public PrecisionRecallStats getDiseaseMentionStats() {
+  public PrecisionRecallStats<PubTatorMentionAnnotation> getDiseaseMentionStats() {
     return diseaseMentionStats;
   }
 
-  public PrecisionRecallStats getChemicalMentionStats() {
+  public PrecisionRecallStats<PubTatorMentionAnnotation> getChemicalMentionStats() {
     return chemicalMentionStats;
   }
 
-  public PrecisionRecallStats getDiseaseApproMentionStats() {
+  public PrecisionRecallStats<PubTatorMentionAnnotation> getDiseaseApproMentionStats() {
     return diseaseApproMentionStats;
   }
 
-  public PrecisionRecallStats getChemicalApproMentionStats() {
+  public PrecisionRecallStats<PubTatorMentionAnnotation> getChemicalApproMentionStats() {
     return chemicalApproMentionStats;
   }
 
-  public PrecisionRecallStats getCdrStats() {
+  public PrecisionRecallStats<PubTatorRelationAnnotation> getCdrStats() {
     return cdrStats;
   }
 
-  public PrecisionRecallStats getCdrWithMentionStats() {
+  public PrecisionRecallStats<PubTatorRelationAnnotation> getCdrWithMentionStats() {
     return cdrWithMentionStats;
   }
 
-  public PrecisionRecallStats getCdrWithApproMentionStats() {
+  public PrecisionRecallStats<PubTatorRelationAnnotation> getCdrWithApproMentionStats() {
     return cdrWithApproMentionStats;
   }
 
-  public PrecisionRecallStats getDiseaseIdStats() {
+  public PrecisionRecallStats<String> getDiseaseIdStats() {
     return diseaseIdStats;
   }
 
@@ -278,17 +274,19 @@ public class PubTatorEval {
 
   private List<PubTatorRelationAnnotation> getAllRelations(Collection<PubTatorDocument> documents,
       String type) {
-    return documents.stream()
+    Set<PubTatorRelationAnnotation> relations = documents.stream()
         .flatMap(d -> d.getRelations().stream())
         .filter(r -> r.getType().equals(type))
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
+    return Lists.newArrayList(relations);
   }
 
   private List<PubTatorMentionAnnotation> getAllMentions(Collection<PubTatorDocument> documents,
       String type) {
-    return documents.stream()
+    Set<PubTatorMentionAnnotation> mentions = documents.stream()
         .flatMap(d -> d.getMentions().stream())
         .filter(m -> m.getType().equals(type))
-        .collect(Collectors.toList());
+        .collect(Collectors.toSet());
+    return Lists.newArrayList(mentions);
   }
 }
