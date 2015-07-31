@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 import com.pengyifan.bioc.BioCAnnotation;
+import com.pengyifan.bioc.BioCDocument;
 import com.pengyifan.bioc.BioCLocation;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -12,8 +13,11 @@ import java.util.Set;
 
 public class PubTatorMentionAnnotation extends PubTatorAnnotation {
 
-  PubTatorMentionAnnotation(BioCAnnotation bioCAnnotation) {
-    super(bioCAnnotation);
+  final BioCAnnotation bioCAnnotation;
+
+  PubTatorMentionAnnotation(BioCDocument bioCDocument, BioCAnnotation bioCAnnotation) {
+    super(bioCDocument);
+    this.bioCAnnotation = bioCAnnotation;
   }
 
   public String getText() {
