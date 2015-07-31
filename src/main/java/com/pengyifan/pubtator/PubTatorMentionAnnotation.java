@@ -6,6 +6,8 @@ import com.google.common.collect.Sets;
 import com.pengyifan.bioc.BioCAnnotation;
 import com.pengyifan.bioc.BioCDocument;
 import com.pengyifan.bioc.BioCLocation;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -15,7 +17,7 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
 
   final BioCAnnotation bioCAnnotation;
 
-  PubTatorMentionAnnotation(BioCDocument bioCDocument, BioCAnnotation bioCAnnotation) {
+  public PubTatorMentionAnnotation(BioCDocument bioCDocument, BioCAnnotation bioCAnnotation) {
     super(bioCDocument);
     this.bioCAnnotation = bioCAnnotation;
   }
@@ -41,16 +43,20 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
     return Sets.newHashSet(Splitter.on('|').split(bioCAnnotation.getInfon("MESH").get()));
   }
 
+  public String getComment() {
+    return bioCAnnotation.getInfon("comment").orElse(null);
+  }
+
   @Override
-  public String toPubTatorString(String docId) {
+  public String toPubTatorString() {
     return Joiner.on("\t").skipNulls().join(
-        docId,
+        getId(),
         getStart(),
         getEnd(),
         getText(),
         getType(),
-        bioCAnnotation.getInfon("MESH").get(),
-        bioCAnnotation.getInfon("comment").orElse(null));
+        Joiner.on('|').join(getConceptIds().stream().sorted().toArray()),
+        getComment());
   }
 
   @Override
@@ -61,7 +67,42 @@ public class PubTatorMentionAnnotation extends PubTatorAnnotation {
         .append("start", getStart())
         .append("end", getEnd())
         .append("text", getText())
-        .append("conceptId", bioCAnnotation.getInfon("MESH").get())
+        .append("conceptId", Joiner.on('|').join(getConceptIds()))
+        .append("comment", getComment())
         .toString();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (obj == this) {
+      return true;
+    }
+    if (obj.getClass() != getClass()) {
+      return false;
+    }
+    PubTatorMentionAnnotation rhs = (PubTatorMentionAnnotation) obj;
+    return new EqualsBuilder()
+        .appendSuper(super.equals(obj))
+        .append(this.getText(), rhs.getText())
+        .append(this.getType(), rhs.getType())
+        .append(this.getStart(), rhs.getStart())
+        .append(this.getEnd(), rhs.getEnd())
+        .append(this.getConceptIds(), rhs.getConceptIds())
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+        .appendSuper(super.hashCode())
+        .append(getText())
+        .append(getType())
+        .append(getStart())
+        .append(getEnd())
+        .append(getConceptIds())
+        .toHashCode();
   }
 }

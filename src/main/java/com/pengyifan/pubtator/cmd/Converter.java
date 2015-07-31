@@ -137,3 +137,4 @@ public class Converter {
     return format.equals("pubtator") || format.equals("bioc");
   }
 }
+

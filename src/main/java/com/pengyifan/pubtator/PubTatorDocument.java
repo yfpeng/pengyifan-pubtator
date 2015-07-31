@@ -5,17 +5,11 @@ import com.google.common.collect.Lists;
 import com.pengyifan.bioc.BioCAnnotation;
 import com.pengyifan.bioc.BioCDocument;
 import com.pengyifan.bioc.BioCPassage;
-import edu.stanford.nlp.ling.CoreAnnotation;
-import edu.stanford.nlp.util.ArrayCoreMap;
-import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.ErasureUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 public class PubTatorDocument {
 
@@ -42,11 +36,11 @@ public class PubTatorDocument {
 
     getMentions().stream()
         .sorted((m1, m2) -> Integer.compare(m1.getStart(), m2.getStart()))
-        .forEach(m -> sj.add(m.toPubTatorString(getId())));
+        .forEach(m -> sj.add(m.toPubTatorString()));
 
     getRelations().stream()
         .sorted((r1, r2) -> r1.getId().compareTo(r2.getId()))
-        .forEach(r -> sj.add(r.toPubTatorString(getId())));
+        .forEach(r -> sj.add(r.toPubTatorString()));
 
     return sj.toString();
   }
@@ -77,16 +71,16 @@ public class PubTatorDocument {
   public List<PubTatorMentionAnnotation> getMentions() {
     List<PubTatorMentionAnnotation> annotatons = Lists.newArrayList();
     for (BioCPassage passage : bioCDocument.getPassages()) {
-      for (BioCAnnotation a : passage.getAnnotations()) {
-        annotatons.add(new PubTatorMentionAnnotation(a));
+      for (BioCAnnotation annotation : passage.getAnnotations()) {
+        annotatons.add(new PubTatorMentionAnnotation(bioCDocument, annotation));
       }
     }
     return annotatons;
   }
 
   public List<PubTatorRelationAnnotation> getRelations() {
-    return bioCDocument.getAnnotations().stream()
-        .map(a -> new PubTatorRelationAnnotation(a))
+    return bioCDocument.getRelations().stream()
+        .map(r -> new PubTatorRelationAnnotation(bioCDocument, r))
         .collect(Collectors.toList());
   }
 }

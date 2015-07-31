@@ -20,18 +20,8 @@ class BioCLoader {
     BioCCollectionReader biocReader = new BioCCollectionReader(reader);
     BioCCollection bioCCollection = biocReader.readCollection();
     biocReader.close();
-
-    // adapt
-    for (BioCDocument doc : bioCCollection.getDocuments()) {
-      for (BioCAnnotation ann : doc.getAnnotations()) {
-        ann.putInfon("conceptId1", ann.getInfon("Chemical").get());
-        ann.putInfon("conceptId2", ann.getInfon("Disease").get());
-      }
-    }
-
     return bioCCollection.getDocuments().stream()
         .map(d -> new PubTatorDocument(d))
         .collect(Collectors.toList());
   }
 }
-
