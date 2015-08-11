@@ -3,10 +3,7 @@ package com.pengyifan.pubtator.utils;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Range;
-import com.pengyifan.bioc.BioCAnnotation;
-import com.pengyifan.bioc.BioCDocument;
-import com.pengyifan.bioc.BioCLocation;
-import com.pengyifan.bioc.BioCPassage;
+import com.pengyifan.bioc.*;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
@@ -49,7 +46,7 @@ public class PubTator2BioC implements Function<PubTatorDocument, BioCDocument> {
     // relation
     for (PubTatorRelationAnnotation relation : pubTatorDocument.getRelations()) {
       try {
-        bioCDocument.addAnnotation(convertRelation(relId++, pubTatorDocument, relation));
+        bioCDocument.addRelation(convertRelation(relId++, pubTatorDocument, relation));
       } catch (IllegalArgumentException e) {
         System.err.println(e.getMessage());
       }
@@ -57,22 +54,39 @@ public class PubTator2BioC implements Function<PubTatorDocument, BioCDocument> {
     return bioCDocument;
   }
 
-  private BioCAnnotation convertRelation(int relId, PubTatorDocument document,
+  private BioCRelation convertRelation(int relId, PubTatorDocument document,
       PubTatorRelationAnnotation relation) {
-    BioCAnnotation bioCAnnotation = new BioCAnnotation();
-    bioCAnnotation.setID("R" + String.valueOf(relId));
-    bioCAnnotation.putInfon("relation", relation.getType());
+    BioCRelation bioCRelation = new BioCRelation();
+    bioCRelation.setID("R" + String.valueOf(relId));
+    bioCRelation.putInfon("relation", relation.getType());
 
     List<PubTatorMentionAnnotation> mentions = document.getMentions(relation.getConceptId1());
     checkArgument(!mentions.isEmpty(), "Cannot find concept id: %s", relation.getConceptId1());
-    bioCAnnotation.putInfon(mentions.get(0).getType(), relation.getConceptId1());
+    bioCRelation.putInfon(mentions.get(0).getType(), relation.getConceptId1());
 
     mentions = document.getMentions(relation.getConceptId2());
     checkArgument(!mentions.isEmpty(), "Cannot find concept id: %s", relation.getConceptId2());
-    bioCAnnotation.putInfon(mentions.get(0).getType(), relation.getConceptId2());
+    bioCRelation.putInfon(mentions.get(0).getType(), relation.getConceptId2());
 
-    return bioCAnnotation;
+    return bioCRelation;
   }
+
+//  private BioCAnnotation convertRelation(int relId, PubTatorDocument document,
+//      PubTatorRelationAnnotation relation) {
+//    BioCAnnotation bioCAnnotation = new BioCAnnotation();
+//    bioCAnnotation.setID("R" + String.valueOf(relId));
+//    bioCAnnotation.putInfon("relation", relation.getType());
+//
+//    List<PubTatorMentionAnnotation> mentions = document.getMentions(relation.getConceptId1());
+//    checkArgument(!mentions.isEmpty(), "Cannot find concept id: %s", relation.getConceptId1());
+//    bioCAnnotation.putInfon(mentions.get(0).getType(), relation.getConceptId1());
+//
+//    mentions = document.getMentions(relation.getConceptId2());
+//    checkArgument(!mentions.isEmpty(), "Cannot find concept id: %s", relation.getConceptId2());
+//    bioCAnnotation.putInfon(mentions.get(0).getType(), relation.getConceptId2());
+//
+//    return bioCAnnotation;
+//  }
 
   private BioCAnnotation convertMention(int annId, PubTatorMentionAnnotation mention) {
     BioCAnnotation bioCAnnotation = new BioCAnnotation();
