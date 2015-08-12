@@ -31,11 +31,11 @@ public class PubTator2BiocTest {
 
     BioCDocument bDoc1 = bDocs.get(0);
     assertEquals("26094", bDoc1.getID());
-    assertEquals(1, bDoc1.getAnnotations().size());
+    assertEquals(1, bDoc1.getRelations().size());
 
     BioCDocument bDoc2 = bDocs.get(1);
     assertEquals("3403780", bDoc2.getID());
-    assertEquals(3, bDoc2.getAnnotations().size());
+    assertEquals(3, bDoc2.getRelations().size());
   }
 
   private Path getReader(String filename) throws URISyntaxException {
