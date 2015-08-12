@@ -3,7 +3,7 @@
   <groupId>com.pengyifan.pubtator</groupId>
   <artifactId>pengyifan-pubtator</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>The Pubtator main core project.</description>
   <url>https://github.com/yfpeng/pengyifan-pubtator</url>
