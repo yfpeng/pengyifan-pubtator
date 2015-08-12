@@ -1,25 +1,16 @@
 package com.pengyifan.pubtator.eval;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 public class PrecisionRecallStats<E> {
   private List<E> tps;
   private List<E> fps;
   private List<E> fns;
-
-  public List<E> getTPs() {
-    return tps;
-  }
-
-  public List<E> getFPs() {
-    return fps;
-  }
-
-  public List<E> getFNs() {
-    return fns;
-  }
 
   public PrecisionRecallStats(List<E> tps, List<E> fps, List<E> fns) {
     this.tps = Lists.newArrayList(tps);
@@ -31,6 +22,18 @@ public class PrecisionRecallStats<E> {
     tps = Lists.newArrayList();
     fps = Lists.newArrayList();
     fns = Lists.newArrayList();
+  }
+
+  public List<E> getTPs() {
+    return tps;
+  }
+
+  public List<E> getFPs() {
+    return fps;
+  }
+
+  public List<E> getFNs() {
+    return fns;
   }
 
   public int getTP() {
@@ -69,8 +72,17 @@ public class PrecisionRecallStats<E> {
   }
 
   /**
+   * Returns the current precision: <tt>tp/(tp+fp)</tt>.
+   * Returns 1.0 if tp and fp are both 0.
+   */
+  public String getPrecision(int numDigits) {
+    double d = getPrecision();
+    return Double.isNaN(d) ? "NaN" : getNumberFormat(numDigits).format(d);
+  }
+
+  /**
    * Returns the current recall: <tt>tp/(tp+fn)</tt>.
-   * Returns 1.0 if tp and fn are both 0.
+   * Returns NaN if tp and fn are both 0.
    */
   public double getRecall() {
     if (getTP() == 0 && getFN() == 0) {
@@ -80,10 +92,26 @@ public class PrecisionRecallStats<E> {
   }
 
   /**
+   * Returns the current recall: <tt>tp/(tp+fn)</tt>.
+   * Returns NaN if tp and fn are both 0.
+   */
+  public String getRecall(int numDigits) {
+    double d = getRecall();
+    return Double.isNaN(d) ? "NaN" : getNumberFormat(numDigits).format(d);
+  }
+
+  /**
    * Returns the current F1 measure (<tt>alpha=0.5</tt>).
    */
   public double getFMeasure() {
     return getFMeasure(0.5);
+  }
+
+  /**
+   * Returns the current F1 measure (<tt>alpha=0.5</tt>).
+   */
+  public String getFMeasure(int numDigits) {
+    return getNumberFormat(numDigits).format(getFMeasure());
   }
 
   /**
@@ -101,10 +129,30 @@ public class PrecisionRecallStats<E> {
   }
 
   /**
-   * Returns a String representation of this PrecisionRecallStats, indicating the number of tp, fp, fn counts.
+   * Returns the F-Measure with the given mixing parameter (must be between 0 and 1).
+   * If either precision or recall are 0, return 0.0.
+   * <tt>F(alpha) = 1/(alpha/precision + (1-alpha)/recall)</tt>
+   */
+  public String getFMeasure(double alpha, int numDigits) {
+    return getNumberFormat(numDigits).format(getFMeasure(alpha));
+  }
+
+  /**
+   * Returns a String representation of this PrecisionRecallStats, indicating the number of tp, fp,
+   * fn counts.
    */
   @Override
   public String toString() {
-    return "PrecisionRecallStats[tp=" + getTP() + ",fp=" + getFP() + ",fn=" + getFN() + "]";
+    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("tp", getTP())
+        .append("fp", getFP())
+        .append("fn", getFN())
+        .toString();
+  }
+
+  private NumberFormat getNumberFormat(int numDigits) {
+    NumberFormat nf = NumberFormat.getNumberInstance();
+    nf.setMaximumFractionDigits(numDigits);
+    return nf;
   }
 }
