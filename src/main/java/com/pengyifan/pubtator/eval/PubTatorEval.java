@@ -7,7 +7,10 @@ import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
 import org.apache.commons.lang3.Range;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -192,37 +195,67 @@ public class PubTatorEval {
       List<PubTatorMentionAnnotation> goldMentions,
       List<PubTatorMentionAnnotation> predMentions,
       BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation> biPredicate) {
-    // concept 1
+    //    // concept 1
+    //    List<PubTatorMentionAnnotation> goldConceptMentions = goldMentions.stream()
+    //        .filter(m -> m.getId().equals(gold.getId())
+    //                && m.getConceptIds().contains(gold.getConceptId1())
+    //        ).collect(Collectors.toList());
+    //    List<PubTatorMentionAnnotation> predConceptMentions = predMentions.stream()
+    //        .filter(m -> m.getId().equals(pred.getId())
+    //                && m.getConceptIds().contains(pred.getConceptId1())
+    //        ).collect(Collectors.toList());
+    //    boolean hasConcept1 = false;
+    //    for (PubTatorMentionAnnotation goldMention : goldConceptMentions) {
+    //      if (find(goldMention, predConceptMentions, biPredicate).isPresent()) {
+    //        hasConcept1 = true;
+    //      }
+    //      for (PubTatorMentionAnnotation predMention : predConceptMentions) {
+    //        if (biPredicate.test(goldMention, predMention)) {
+    //          hasConcept1 = true;
+    //        }
+    //      }
+    //    }
+    //    if (!hasConcept1) {
+    //      return false;
+    //    }
+    //    // concept 2
+    //    goldConceptMentions = goldMentions.stream()
+    //        .filter(m -> m.getId().equals(gold.getId())
+    //                && m.getConceptIds().contains(gold.getConceptId2())
+    //        ).collect(Collectors.toList());
+    //    predConceptMentions = predMentions.stream()
+    //        .filter(m -> m.getId().equals(pred.getId())
+    //                && m.getConceptIds().contains(pred.getConceptId2())
+    //        ).collect(Collectors.toList());
+    //    for (PubTatorMentionAnnotation goldMention : goldConceptMentions) {
+    //      for (PubTatorMentionAnnotation predMention : predConceptMentions) {
+    //        if (biPredicate.test(goldMention, predMention)) {
+    //          return true;
+    //        }
+    //      }
+    //    }
+    return (findMention(gold.getId(), gold.getConceptId1(), pred.getId(), pred.getConceptId1(),
+        goldMentions, predMentions, biPredicate)
+        && findMention(gold.getId(), gold.getConceptId2(), pred.getId(), pred.getConceptId2(),
+        goldMentions, predMentions, biPredicate))
+        || (findMention(gold.getId(), gold.getConceptId1(), pred.getId(), pred.getConceptId2(),
+        goldMentions, predMentions, biPredicate)
+        && findMention(gold.getId(), gold.getConceptId1(), pred.getId(), pred.getConceptId2(),
+        goldMentions, predMentions, biPredicate));
+  }
+
+  private boolean findMention(String goldID, String goldConcept,
+      String predID, String predConcept,
+      List<PubTatorMentionAnnotation> goldMentions,
+      List<PubTatorMentionAnnotation> predMentions,
+      BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation> biPredicate) {
     List<PubTatorMentionAnnotation> goldConceptMentions = goldMentions.stream()
-        .filter(m -> m.getId().equals(gold.getId())
-                && m.getConceptIds().contains(gold.getConceptId1())
+        .filter(m -> m.getId().equals(goldID)
+                && m.getConceptIds().contains(goldConcept)
         ).collect(Collectors.toList());
     List<PubTatorMentionAnnotation> predConceptMentions = predMentions.stream()
-        .filter(m -> m.getId().equals(pred.getId())
-                && m.getConceptIds().contains(pred.getConceptId1())
-        ).collect(Collectors.toList());
-    boolean hasConcept1 = false;
-    for (PubTatorMentionAnnotation goldMention : goldConceptMentions) {
-      if (find(goldMention, predConceptMentions, biPredicate).isPresent()) {
-        hasConcept1 = true;
-      }
-      for (PubTatorMentionAnnotation predMention : predConceptMentions) {
-        if (biPredicate.test(goldMention, predMention)) {
-          hasConcept1 = true;
-        }
-      }
-    }
-    if (!hasConcept1) {
-      return false;
-    }
-    // concept 2
-    goldConceptMentions = goldMentions.stream()
-        .filter(m -> m.getId().equals(gold.getId())
-                && m.getConceptIds().contains(gold.getConceptId2())
-        ).collect(Collectors.toList());
-    predConceptMentions = predMentions.stream()
-        .filter(m -> m.getId().equals(pred.getId())
-                && m.getConceptIds().contains(pred.getConceptId2())
+        .filter(m -> m.getId().equals(predID)
+                && m.getConceptIds().contains(predConcept)
         ).collect(Collectors.toList());
     for (PubTatorMentionAnnotation goldMention : goldConceptMentions) {
       for (PubTatorMentionAnnotation predMention : predConceptMentions) {

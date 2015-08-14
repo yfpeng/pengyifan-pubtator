@@ -2,7 +2,11 @@ package com.pengyifan.pubtator.utils;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
-import com.pengyifan.bioc.*;
+import com.pengyifan.bioc.BioCAnnotation;
+import com.pengyifan.bioc.BioCDocument;
+import com.pengyifan.bioc.BioCLocation;
+import com.pengyifan.bioc.BioCPassage;
+import com.pengyifan.bioc.BioCRelation;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
@@ -52,8 +56,8 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
     Optional<String> type = relation.getInfon("relation");
     checkArgument(type.isPresent(), "No type found");
 
-    String conceptId1 = finalizeConceptId(relation.getInfon("Chemical").get());
-    String conceptId2 = finalizeConceptId(relation.getInfon("Disease").get());
+    String conceptId1 = finalizeConceptId(relation.getInfon("Chemical").get(), pDoc);
+    String conceptId2 = finalizeConceptId(relation.getInfon("Disease").get(), pDoc);
     if (conceptId1.compareTo(conceptId2) > 0) {
       String tmp = conceptId1;
       conceptId1 = conceptId2;
@@ -67,8 +71,8 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
     Optional<String> type = annotation.getInfon("relation");
     checkArgument(type.isPresent(), "No type found");
 
-    String conceptId1 = finalizeConceptId(annotation.getInfon("Chemical").get());
-    String conceptId2 = finalizeConceptId(annotation.getInfon("Disease").get());
+    String conceptId1 = finalizeConceptId(annotation.getInfon("Chemical").get(), pDoc);
+    String conceptId2 = finalizeConceptId(annotation.getInfon("Disease").get(), pDoc);
     if (conceptId1.compareTo(conceptId2) > 0) {
       String tmp = conceptId1;
       conceptId1 = conceptId2;
@@ -78,11 +82,11 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
         new PubTatorRelationAnnotation(pDoc.getId(), type.get(), conceptId1, conceptId2));
   }
 
-  private String finalizeConceptId(String conceptId) {
-    checkArgument(conceptId != null && conceptId.length() != 0, "Cannot apply conceptId: %s",
-        conceptId);
+  private String finalizeConceptId(String conceptId, PubTatorDocument pDoc) {
+//    checkArgument(conceptId != null && conceptId.length() != 0,
+//        "Cannot apply conceptId: %s", pDoc.getId());
     if (conceptId == null || conceptId.length() == 0 || conceptId.equals("-1")) {
-      return null;
+      return "-1";
     }
     int col = conceptId.indexOf(':');
     if (col != -1) {
@@ -111,14 +115,21 @@ public class BioC2PubTator implements Function<BioCDocument, PubTatorDocument> {
     Set<String> conceptIds = Sets.newHashSet();
     if (conceptIdList.isPresent()) {
       for (String c : Splitter.on("|").split(conceptIdList.get().trim())) {
-        String normalizedConceptId = finalizeConceptId(c);
+        String normalizedConceptId = finalizeConceptId(c, pDoc);
         if (normalizedConceptId != null) {
           conceptIds.add(normalizedConceptId);
         }
       }
     }
 
-    pDoc.addAnnotation(new PubTatorMentionAnnotation(
-        pDoc.getId(), type.get(), start, end, annotation.getText().get(), conceptIds));
+    Optional<String> comment = annotation.getInfon("comment");
+
+    if (comment.isPresent()) {
+      pDoc.addAnnotation(new PubTatorMentionAnnotation(
+          pDoc.getId(), type.get(), start, end, annotation.getText().get(), conceptIds, comment.get()));
+    } else {
+      pDoc.addAnnotation(new PubTatorMentionAnnotation(
+          pDoc.getId(), type.get(), start, end, annotation.getText().get(), conceptIds));
+    }
   }
 }

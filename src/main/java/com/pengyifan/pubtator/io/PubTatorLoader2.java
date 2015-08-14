@@ -173,6 +173,7 @@ public class PubTatorLoader2 implements Closeable {
           currentDocument.getId(), type, start, end, actualText, conceptIds, comment));
       return true;
     } catch(Exception e) {
+//      errorMessage.append(String.format("Error: %s\n", e.getMessage()));
       return false;
     }
   }
@@ -195,6 +196,7 @@ public class PubTatorLoader2 implements Closeable {
           new PubTatorRelationAnnotation(currentDocument.getId(), type, conceptId1, conceptId2));
       return true;
     } catch(Exception e) {
+//      errorMessage.append(String.format("Error: %s\n", e.getMessage()));
       return false;
     }
   }

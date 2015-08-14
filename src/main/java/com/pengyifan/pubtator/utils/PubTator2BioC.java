@@ -101,6 +101,9 @@ public class PubTator2BioC implements Function<PubTatorDocument, BioCDocument> {
       bioCAnnotation.putInfon("MESH", Joiner.on('|').join(mention.getConceptIds()));
       bioCAnnotation.putInfon("CompositeRole", "CompositeMention");
     }
+    if (mention.getComment() != null && !mention.getComment().isEmpty()) {
+      bioCAnnotation.putInfon("comment", mention.getComment());
+    }
     return bioCAnnotation;
   }
 
