@@ -22,9 +22,9 @@ public class PubTatorIO {
     List<PubTatorDocument> documents = loader2.read();
     loader2.close();
 
-    if (loader2.hasErrors()) {
-      throw new IOException(loader2.getErrorMessage());
-    }
+//    if (loader2.hasErrors()) {
+//      throw new IOException(loader2.getErrorMessage());
+//    }
     return documents;
   }
 

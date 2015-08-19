@@ -91,7 +91,7 @@ public class PubTatorLoader2 implements Closeable {
           } else {
             // error
             appendErrorMessage();
-            state = 0;
+//            state = 0;
           }
           currentLine = reader.readLine();
         }
