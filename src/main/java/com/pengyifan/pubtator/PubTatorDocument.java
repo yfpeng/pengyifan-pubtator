@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class PubTatorDocument {
 
   private CoreMap map;
@@ -93,6 +96,36 @@ public class PubTatorDocument {
 
   public List<PubTatorRelationAnnotation> getRelations() {
     return map.get(RelationsAnnotation.class);
+  }
+
+  public void checkValidation() {
+    checkNotNull(getId(), "ID is null");
+    checkNotNull(getAbstract(), "abstract is null");
+    checkNotNull(getTitle(), "title is null");
+
+    for(PubTatorMentionAnnotation mention: getMentions()) {
+      checkArgument(mention.getId().equals(getId()),
+          "Mention ID[%s] is different from doc ID[%s]: %s, %s", mention.getId(), getId());
+      checkNotNull(mention.getType(), "Mention type is null: %s", mention);
+
+      String actualText = mention.getText();
+      String expectedText = getText().substring(mention.getStart(), mention.getEnd());
+      checkArgument(expectedText.equals(actualText), "Text mismatch. Expected[%s], actual[%s]",
+          expectedText, actualText);
+    }
+
+    for(PubTatorRelationAnnotation relation: getRelations()) {
+      checkArgument(relation.getId().equals(getId()),
+          "Relation ID[%s] is different from doc ID[%s]: %s, %s", relation.getId(), getId());
+      checkNotNull(relation.getType(), "Relation type is null: %s", relation);
+
+      String conceptId1 = relation.getConceptId1();
+      checkArgument(!getMentions(conceptId1).isEmpty(),
+          "Cannot find concept [%s] in the document.", conceptId1);
+      String conceptId2 = relation.getConceptId2();
+      checkArgument(!getMentions(conceptId2).isEmpty(),
+          "Cannot find concept [%s] in the document.", conceptId2);
+    }
   }
 
   private class AbstractAnnotation implements CoreAnnotation<String> {

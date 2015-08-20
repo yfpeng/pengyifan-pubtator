@@ -19,14 +19,14 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class PubTatorLoader2 implements Closeable {
+public class PubTatorLoader implements Closeable {
 
   private LineNumberReader reader;
   private StringBuilder errorMessage;
   private String currentLine;
   private PubTatorDocument currentDocument;
 
-  public PubTatorLoader2(Reader reader) {
+  public PubTatorLoader(Reader reader) {
     this.reader = new LineNumberReader(reader);
     errorMessage = new StringBuilder();
   }
@@ -75,7 +75,7 @@ public class PubTatorLoader2 implements Closeable {
         } else {
           // error
           appendErrorMessage();
-          state = 0;
+          state = 2;
           currentLine = reader.readLine();
         }
         break;
@@ -91,7 +91,6 @@ public class PubTatorLoader2 implements Closeable {
           } else {
             // error
             appendErrorMessage();
-//            state = 0;
           }
           currentLine = reader.readLine();
         }
@@ -110,7 +109,6 @@ public class PubTatorLoader2 implements Closeable {
       String[] fields = parseText(currentLine);
       checkNotNull(fields[0], "ID is null");
       checkNotNull(fields[2], "text is null");
-
       currentDocument.setId(fields[0]);
       currentDocument.setTitle(fields[2]);
     } catch(Exception e) {
@@ -137,28 +135,21 @@ public class PubTatorLoader2 implements Closeable {
   }
 
   private void appendErrorMessage(Exception e) {
-    errorMessage.append(e).append('\n');
-    appendErrorMessage();
+    errorMessage.append(String.format("Cannot parse line %d: %s\n  Error msg: %s\n",
+        reader.getLineNumber(), currentLine, e.getMessage()));
   }
 
   private boolean parseMention(String[] fields) {
     try {
-      checkArgument(fields[0].equals(currentDocument.getId()),
-          "Different doc id: %s, %s", currentDocument.getId(), fields[0]);
-
       int start = Integer.parseInt(fields[1]);
       int end = Integer.parseInt(fields[2]);
 
-      String actualText = fields[3];
-      String expectedText = currentDocument.getText().substring(start, end);
-      checkArgument(expectedText.equals(actualText), "Text mismatch. Expected[%s], actual[%s]",
-          expectedText, actualText);
-
+      String text = fields[3];
       String type = fields[4];
       Set<String> conceptIds = Sets.newHashSet();
       if (fields.length >= 6) {
         for (String conceptId : Splitter.on("|").split(fields[5])) {
-          String normalizedConceptId = finalizeConceptId(conceptId);
+          String normalizedConceptId = PubTatorIO.finalizeConceptId(conceptId);
           if (normalizedConceptId != null) {
             conceptIds.add(normalizedConceptId);
           }
@@ -170,46 +161,26 @@ public class PubTatorLoader2 implements Closeable {
       }
 
       currentDocument.addAnnotation(new PubTatorMentionAnnotation(
-          currentDocument.getId(), type, start, end, actualText, conceptIds, comment));
+          currentDocument.getId(), type, start, end, text, conceptIds, comment));
       return true;
     } catch(Exception e) {
-//      errorMessage.append(String.format("Error: %s\n", e.getMessage()));
+      appendErrorMessage(e);
       return false;
     }
   }
 
   private boolean parseRelation(String[] fields) {
     try {
-      checkArgument(fields[0].equals(currentDocument.getId()),
-          "Different doc id: %s, %s", currentDocument.getId(), fields[0]);
-
       String type = fields[1];
-      String conceptId1 = finalizeConceptId(fields[2]);
-      String conceptId2 = finalizeConceptId(fields[3]);
-
-      checkArgument(!currentDocument.getMentions(conceptId1).isEmpty(),
-          "Cannot find concept [%s] in the document.", conceptId1);
-      checkArgument(!currentDocument.getMentions(conceptId2).isEmpty(),
-          "Cannot find concept [%s] in the document.", conceptId2);
-
+      String conceptId1 = PubTatorIO.finalizeConceptId(fields[2]);
+      String conceptId2 = PubTatorIO.finalizeConceptId(fields[3]);
       currentDocument.addAnnotation(
           new PubTatorRelationAnnotation(currentDocument.getId(), type, conceptId1, conceptId2));
       return true;
     } catch(Exception e) {
-//      errorMessage.append(String.format("Error: %s\n", e.getMessage()));
+      appendErrorMessage(e);
       return false;
     }
-  }
-
-  private String finalizeConceptId(String conceptId) {
-    if (conceptId == null || conceptId.length() == 0 || conceptId.equals("-1")) {
-      return null;
-    }
-    int col = conceptId.indexOf(':');
-    if (col != -1) {
-      conceptId = conceptId.substring(col + 1);
-    }
-    return conceptId;
   }
 
   private String[] parseText(String line) {

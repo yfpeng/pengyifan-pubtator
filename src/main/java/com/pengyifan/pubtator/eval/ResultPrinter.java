@@ -1,6 +1,7 @@
 package com.pengyifan.pubtator.eval;
 
 import com.google.common.base.Strings;
+import com.pengyifan.commons.math.PrecisionRecallStats;
 
 import java.text.DecimalFormat;
 
@@ -54,11 +55,11 @@ public class ResultPrinter {
     display.append(row).append(System.lineSeparator());
   }
 
-  private String getInteger(int integer) {
+  public static String getInteger(int integer) {
     return INTEGER_FORMAT.format(integer);
   }
 
-  private String getPercentage(double percentage) {
+  public static String getPercentage(double percentage) {
     if (Double.isNaN(percentage)) {
       return "--";
     } else {

@@ -18,13 +18,13 @@ public class PubTatorIO {
 
   public static List<PubTatorDocument> readPubTatorFormat(Reader reader)
       throws IOException {
-    PubTatorLoader2 loader2 = new PubTatorLoader2(reader);
-    List<PubTatorDocument> documents = loader2.read();
-    loader2.close();
+    PubTatorLoader loader = new PubTatorLoader(reader);
+    List<PubTatorDocument> documents = loader.read();
+    loader.close();
 
-//    if (loader2.hasErrors()) {
-//      throw new IOException(loader2.getErrorMessage());
-//    }
+    if (loader.hasErrors()) {
+      throw new IOException(loader.getErrorMessage());
+    }
     return documents;
   }
 
@@ -36,5 +36,16 @@ public class PubTatorIO {
       throws IOException {
     writer.write(Joiner.on("\n\n").join(documentList));
     writer.flush();
+  }
+
+  public static String finalizeConceptId(String conceptId) {
+    if (conceptId == null || conceptId.length() == 0 || conceptId.equals("-1")) {
+      return "-1";
+    }
+    int col = conceptId.indexOf(':');
+    if (col != -1) {
+      conceptId = conceptId.substring(col + 1);
+    }
+    return conceptId;
   }
 }

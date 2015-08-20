@@ -2,9 +2,7 @@ package com.pengyifan.pubtator.cmd;
 
 import com.google.common.collect.Lists;
 import com.pengyifan.pubtator.PubTatorDocument;
-import com.pengyifan.pubtator.PubTatorRelationAnnotation;
 import com.pengyifan.pubtator.eval.DetailedTextDisplay;
-import com.pengyifan.pubtator.eval.PrecisionRecallStats;
 import com.pengyifan.pubtator.io.PubTatorIO;
 import com.pengyifan.pubtator.eval.PubTatorEval;
 import org.kohsuke.args4j.*;

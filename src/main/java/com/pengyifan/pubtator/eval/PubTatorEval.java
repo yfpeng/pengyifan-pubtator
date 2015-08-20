@@ -2,6 +2,7 @@ package com.pengyifan.pubtator.eval;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.pengyifan.commons.math.PrecisionRecallStats;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
@@ -18,19 +19,19 @@ public class PubTatorEval {
   private final List<PubTatorDocument> goldDocuments;
   private final List<PubTatorDocument> predDocuments;
 
-  PrecisionRecallStats<PubTatorMentionAnnotation> diseaseMentionStats;
-  PrecisionRecallStats<PubTatorMentionAnnotation> chemicalMentionStats;
+  private PrecisionRecallStats<PubTatorMentionAnnotation> diseaseMentionStats;
+  private PrecisionRecallStats<PubTatorMentionAnnotation> chemicalMentionStats;
 
-  PrecisionRecallStats<PubTatorMentionAnnotation> diseaseApproMentionStats;
-  PrecisionRecallStats<PubTatorMentionAnnotation> chemicalApproMentionStats;
+  private PrecisionRecallStats<PubTatorMentionAnnotation> diseaseApproMentionStats;
+  private PrecisionRecallStats<PubTatorMentionAnnotation> chemicalApproMentionStats;
 
-  PrecisionRecallStats<PubTatorRelationAnnotation> cdrStats;
+  private PrecisionRecallStats<PubTatorRelationAnnotation> cdrStats;
 
-  PrecisionRecallStats<PubTatorRelationAnnotation> cdrWithMentionStats;
-  PrecisionRecallStats<PubTatorRelationAnnotation> cdrWithApproMentionStats;
+  private PrecisionRecallStats<PubTatorRelationAnnotation> cdrWithMentionStats;
+  private PrecisionRecallStats<PubTatorRelationAnnotation> cdrWithApproMentionStats;
 
-  PrecisionRecallStats<String> diseaseIdStats;
-  PrecisionRecallStats<String> chemicalIdStats;
+  private PrecisionRecallStats<String> diseaseIdStats;
+  private PrecisionRecallStats<String> chemicalIdStats;
 
   private static final BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation>
       mentionStrictBiPredicate =

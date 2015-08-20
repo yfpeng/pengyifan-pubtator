@@ -6,6 +6,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+/**
+ * conceptId1: Chemical
+ * <p/>
+ * conceptId2: Disease
+ */
 public class PubTatorRelationAnnotation extends PubTatorAnnotation {
 
   private String conceptId1;

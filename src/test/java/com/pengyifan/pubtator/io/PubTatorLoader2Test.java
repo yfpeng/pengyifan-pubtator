@@ -100,7 +100,7 @@ public class PubTatorLoader2Test {
   }
 
   private void testRead(String line) throws IOException {
-    PubTatorLoader2 loader = new PubTatorLoader2(new StringReader(line));
+    PubTatorLoader loader = new PubTatorLoader(new StringReader(line));
     List<PubTatorDocument> docs = loader.read();
     loader.close();
 
