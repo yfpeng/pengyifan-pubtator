@@ -3,11 +3,9 @@ package com.pengyifan.pubtator.io;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.truth.StringUtil;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -84,7 +82,7 @@ public class PubTatorLoader implements Closeable {
           state = 0;
         } else {
           String[] fields = currentLine.split("[\\t]");
-          if (parseMention(fields)) {
+          if (isInteger(fields[1]) && parseMention(fields)) {
             ;
           } else if (parseRelation(fields)) {
             ;
@@ -104,6 +102,15 @@ public class PubTatorLoader implements Closeable {
     return pDocuments;
   }
 
+  private boolean isInteger(String input) {
+    try {
+      Integer.parseInt(input);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
   private void parseTitle() {
     try {
       String[] fields = parseText(currentLine);
@@ -111,7 +118,7 @@ public class PubTatorLoader implements Closeable {
       checkNotNull(fields[2], "text is null");
       currentDocument.setId(fields[0]);
       currentDocument.setTitle(fields[2]);
-    } catch(Exception e) {
+    } catch (Exception e) {
       appendErrorMessage(e);
     }
   }
@@ -124,7 +131,7 @@ public class PubTatorLoader implements Closeable {
       checkArgument(fields[0].equals(currentDocument.getId()),
           "Different doc id: %s, %s", currentDocument.getId(), fields[0]);
       currentDocument.setAbstract(fields[2]);
-    } catch(Exception e) {
+    } catch (Exception e) {
       appendErrorMessage(e);
     }
   }
@@ -141,6 +148,7 @@ public class PubTatorLoader implements Closeable {
 
   private boolean parseMention(String[] fields) {
     try {
+      String id = fields[0];
       int start = Integer.parseInt(fields[1]);
       int end = Integer.parseInt(fields[2]);
 
@@ -156,14 +164,14 @@ public class PubTatorLoader implements Closeable {
         }
       }
       String comment = null;
-      if (fields.length >= 7) {
+      if (fields.length == 7) {
         comment = fields[6];
       }
 
       currentDocument.addAnnotation(new PubTatorMentionAnnotation(
-          currentDocument.getId(), type, start, end, text, conceptIds, comment));
+          id, type, start, end, text, conceptIds, comment));
       return true;
-    } catch(Exception e) {
+    } catch (Exception e) {
       appendErrorMessage(e);
       return false;
     }
@@ -171,13 +179,18 @@ public class PubTatorLoader implements Closeable {
 
   private boolean parseRelation(String[] fields) {
     try {
+      String id = fields[0];
       String type = fields[1];
       String conceptId1 = PubTatorIO.finalizeConceptId(fields[2]);
       String conceptId2 = PubTatorIO.finalizeConceptId(fields[3]);
+      String comment = null;
+      if (fields.length == 5) {
+        comment = fields[4];
+      }
       currentDocument.addAnnotation(
-          new PubTatorRelationAnnotation(currentDocument.getId(), type, conceptId1, conceptId2));
+          new PubTatorRelationAnnotation(id, type, conceptId1, conceptId2, comment));
       return true;
-    } catch(Exception e) {
+    } catch (Exception e) {
       appendErrorMessage(e);
       return false;
     }
