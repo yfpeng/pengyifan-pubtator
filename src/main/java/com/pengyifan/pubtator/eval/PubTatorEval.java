@@ -1,11 +1,13 @@
 package com.pengyifan.pubtator.eval;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.pengyifan.commons.math.PrecisionRecallStats;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
+import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.Range;
 
 import java.util.Collection;
@@ -33,19 +35,26 @@ public class PubTatorEval {
   private PrecisionRecallStats<String> diseaseIdStats;
   private PrecisionRecallStats<String> chemicalIdStats;
 
+  private static final boolean overlap (Set<String> s1, Set<String> s2) {
+    Set<String> s = Sets.intersection(s1, s2);
+    return s.size()>1 || (s.size()==1 && !Iterables.getOnlyElement(s).equals("-1"));
+  }
+
   private static final BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation>
       mentionStrictBiPredicate =
       (m1, m2) -> m1.getId().equals(m2.getId())
           && m1.getType().equals(m2.getType())
           && m1.getStart() == m2.getStart()
-          && m1.getEnd() == m2.getEnd();
+          && m1.getEnd() == m2.getEnd()
+          && overlap(m1.getConceptIds(), m2.getConceptIds());
 
   private static final BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation>
       mentionApproxBiPredicate =
       (m1, m2) -> m1.getId().equals(m2.getId())
           && m1.getType().equals(m2.getType())
           && Range.between(m1.getStart(), m1.getEnd()).isOverlappedBy(
-          Range.between(m2.getStart(), m2.getEnd()));
+          Range.between(m2.getStart(), m2.getEnd()))
+          && overlap(m1.getConceptIds(), m2.getConceptIds());
 
   private static final BiPredicate<PubTatorRelationAnnotation, PubTatorRelationAnnotation>
       cdiBiPredicate =
@@ -123,7 +132,7 @@ public class PubTatorEval {
     List<String> goldIds = uniqueIds(getAllMentions(goldDocuments, "Disease"));
     List<String> predIds = uniqueIds(getAllMentions(predDocuments, "Disease"));
 
-    final BiPredicate<String, String> biPredicate = (m1, m2) -> m1.equals(m2);
+    final BiPredicate<String, String> biPredicate = (m1, m2) -> m1.equals(m2) && !m1.equals("-1");
     diseaseIdStats = eval(goldIds, predIds, (m1, m2) -> m1.equals(m2));
 
     goldIds = uniqueIds(getAllMentions(goldDocuments, "Chemical"));

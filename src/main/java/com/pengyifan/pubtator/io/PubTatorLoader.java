@@ -158,9 +158,7 @@ public class PubTatorLoader implements Closeable {
       if (fields.length >= 6) {
         for (String conceptId : Splitter.on("|").split(fields[5])) {
           String normalizedConceptId = PubTatorIO.finalizeConceptId(conceptId);
-          if (normalizedConceptId != null) {
-            conceptIds.add(normalizedConceptId);
-          }
+          conceptIds.add(normalizedConceptId);
         }
       }
       String comment = null;
