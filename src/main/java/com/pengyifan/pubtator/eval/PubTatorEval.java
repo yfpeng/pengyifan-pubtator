@@ -7,7 +7,6 @@ import com.pengyifan.commons.math.PrecisionRecallStats;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.PubTatorMentionAnnotation;
 import com.pengyifan.pubtator.PubTatorRelationAnnotation;
-import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.Range;
 
 import java.util.Collection;
@@ -35,9 +34,9 @@ public class PubTatorEval {
   private PrecisionRecallStats<String> diseaseIdStats;
   private PrecisionRecallStats<String> chemicalIdStats;
 
-  private static final boolean overlap (Set<String> s1, Set<String> s2) {
+  private static final boolean overlap(Set<String> s1, Set<String> s2) {
     Set<String> s = Sets.intersection(s1, s2);
-    return s.size()>1 || (s.size()==1 && !Iterables.getOnlyElement(s).equals("-1"));
+    return s.size() > 1 || (s.size() == 1 && !Iterables.getOnlyElement(s).equals("-1"));
   }
 
   private static final BiPredicate<PubTatorMentionAnnotation, PubTatorMentionAnnotation>
@@ -60,10 +59,12 @@ public class PubTatorEval {
       cdiBiPredicate =
       (r1, r2) -> r1.getId().equals(r2.getId())
           && r1.getType().equals(r2.getType())
-          && (r1.getConceptId1().equals(r2.getConceptId1())
+          && !r1.getConceptId1().equals("-1")
+          && !r1.getConceptId2().equals("-1")
+          && ((r1.getConceptId1().equals(r2.getConceptId1())
           && r1.getConceptId2().equals(r2.getConceptId2()))
           || (r1.getConceptId2().equals(r2.getConceptId1())
-          && r1.getConceptId1().equals(r2.getConceptId2()));
+          && r1.getConceptId1().equals(r2.getConceptId2())));
 
   public PubTatorEval(List<PubTatorDocument> gold, List<PubTatorDocument> pred) {
     this.goldDocuments = gold;
@@ -290,6 +291,9 @@ public class PubTatorEval {
     for (E gold : golds) {
       boolean found = false;
       for (int i = 0; i < preds.size(); i++) {
+        //        if (foundInGold[i]) {
+        //          continue;
+        //        }
         if (biPredicate.test(gold, preds.get(i))) {
           foundInGold[i] = true;
           found = true;
