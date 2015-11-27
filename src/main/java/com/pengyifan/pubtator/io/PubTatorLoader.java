@@ -82,7 +82,10 @@ public class PubTatorLoader implements Closeable {
           state = 0;
         } else {
           String[] fields = currentLine.split("[\\t]");
-          if (isInteger(fields[1]) && parseMention(fields)) {
+          if (fields.length < 2) {
+            // error
+            appendErrorMessage();
+          } else if (isInteger(fields[1]) && parseMention(fields)) {
             ;
           } else if (parseRelation(fields)) {
             ;
