@@ -34,7 +34,7 @@ public class PubTatorEval {
   private PrecisionRecallStats<String> diseaseIdStats;
   private PrecisionRecallStats<String> chemicalIdStats;
 
-  private static final boolean overlap(Set<String> s1, Set<String> s2) {
+  private static boolean overlap(Set<String> s1, Set<String> s2) {
     Set<String> s = Sets.intersection(s1, s2);
     return s.size() > 1 || (s.size() == 1 && !Iterables.getOnlyElement(s).equals("-1"));
   }
@@ -73,7 +73,7 @@ public class PubTatorEval {
 
   /**
    * @param mode 1-dner, 2-cid, 3-all
-   * @return
+   * @return resulting string
    */
   public String getResult(int mode, EvalDisplay display) {
     if (mode == 0) {
@@ -284,7 +284,7 @@ public class PubTatorEval {
     cdrStats = eval(goldRelations, predRelations, cdiBiPredicate);
   }
 
-  private <E> PrecisionRecallStats eval(List<E> golds, List<E> preds,
+  private <E> PrecisionRecallStats<E> eval(List<E> golds, List<E> preds,
       BiPredicate<E, E> biPredicate) {
     PrecisionRecallStats<E> stats = new PrecisionRecallStats<>();
     boolean[] foundInGold = new boolean[preds.size()];
