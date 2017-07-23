@@ -23,7 +23,7 @@ public class PubTatorIO {
     loader.close();
 
     if (loader.hasErrors()) {
-      throw new IOException(loader.getErrorMessage());
+      System.err.println(loader.getErrorMessage());
     }
     return documents;
   }
