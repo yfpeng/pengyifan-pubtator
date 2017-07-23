@@ -1,5 +1,6 @@
 package com.pengyifan.pubtator.cmd;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.pengyifan.pubtator.PubTatorDocument;
 import com.pengyifan.pubtator.eval.DetailedTextDisplay;
@@ -29,6 +30,11 @@ public class Evaluation {
   private List<String> arguments = Lists.newArrayList();
 
   public static void main(String[] args) throws IOException, XMLStreamException, SAXException {
+    if (args.length == 0) {
+      String cmd = "-f pubtator tmp/CDR_TestSet.gold.PubTator tmp/TestSet.DNorm.PubTator.txt";
+      args = Splitter.on(' ').splitToList(cmd).toArray(new String[0]);
+    }
+
     new Evaluation().doMain(args);
   }
 
